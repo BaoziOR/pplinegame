@@ -1,0 +1,26 @@
+<view class='containers'>
+
+  <scroll-view class='more' bindscroll="scroll" lower-threshold="90rpx" upper-threshold="10rpx" bindscrolltolower="scrollToLower" bindscrolltoupper="scrollToUpper" scroll-y="true" scroll-top='{{scrollTop}}'>
+    <text style='text-decoration-line:underline;'>新游推荐</text>
+    <block wx:for="{{gameLinks}}" wx:for-item="itemss" wx:key="key" wx:for-index="index">
+      <template is='moregame' data="{{gameid:index,gameName:itemss.gameName,imgUrl:itemss.imgUrl,iconUrl:itemss.iconUrl,tabs:itemss.tabs}}" />
+    </block>
+  </scroll-view>
+</view>
+
+<template name='moregame'>
+  <view class='gameItem'>
+    <image bindtap='clicktoGame' data-id='{{gameid}}' class='gameIcon' src='{{imgUrl}}'></image>
+    <view class='gameInfo'>
+      <image class='iconUrl' src='{{iconUrl}}'></image>
+      <text class='gameName'>{{gameName}}</text>
+      <block wx:for="{{tabs}}" wx:for-item="item" wx:key="keyss">
+        <template is='typeTab' data="{{tab:item}}" />
+      </block>
+    </view>
+  </view>
+</template>
+
+<template name='typeTab'>
+  <view class='tap'>{{tab}}</view>
+</template>

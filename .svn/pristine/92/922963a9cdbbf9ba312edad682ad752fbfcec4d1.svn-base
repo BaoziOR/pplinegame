@@ -1,0 +1,79 @@
+<template name="signin">
+  <view class="signin-containerbg">
+    <view class="signin-container">
+      <view class="signin-titlebg"/>
+      <view class="signin-title"/>
+      <view class="signin-titletxt">每日登录奖励</view>
+      <view class="signin-decorate1" style='left:47rpx;top:22rpx;transform: rotate(45deg);'>
+        <view class="signin-decorate2" style='background:#704cd9'/>
+      </view>
+      <view class="signin-decorate1" style='left:425rpx;top:-80rpx;transform: rotate(10deg);'>
+        <view class="signin-decorate2" style='background:#564432'/>
+      </view>
+      <view class="signin-decorate3" style='left:85rpx;top:-20rpx;background:#ff6868;transform:rotate(50deg)' />
+      <view class="signin-decorate3" style='left:530rpx;top:40rpx;background:#cf5ef4;transform:rotate(-40deg)' />
+      <view class="signin-decorate3" style='left:194rpx;top:-100rpx;background:#82cec4;transform:rotate(-40deg)' />
+      <view class="signin-close" hover-class='button-click' bindtap='onCloseSignIn'>
+        <image class="signin-close-icon" src="../signin/img/close.png"></image> 
+      </view>
+      <view class="signin-itemcontainer">
+        <block wx:for="{{list}}">
+          <template is="signin-item" data="{{...item}}"/>  
+        </block>  
+      </view>
+      <block wx:if="{{canGetReward}}">
+        <button class="signin-get" hover-class='button-click' bindtap='onGetSigninReward'>点击领取</button>
+      </block>
+    </view>
+  </view>
+</template>
+
+<template name="signin-item">
+  <block wx:if="{{day < 7}}">
+    <view class="signin-item signin-item-normal" style="background:{{state < 0 ? '#e5dac9' : state == 1 ? '#83cec4' : '#ff7979'}}">
+      <text class="signin-item-title" style="color:{{state >= 0 ? 'white' : '#a47a6b'}}">第{{day}}天</text>
+      <block wx:if="{{rewardColor}}">
+        <view class="signin-skin-view" style='width:60rpx;height:60rpx;background:{{rewardColor}}'>
+          <image style='width:50rpx;height:50rpx;' src="{{rewardIcon}}" />
+        </view>
+      </block>
+      <block wx:else>
+        <image class="signin-reward-icon" style='width:52rpx;height:58rpx;' src="{{rewardIcon}}"></image> 
+      </block>
+      <view class="signin-reward-count-view">
+        <block wx:if="{{isFragment}}">
+          <image class="signin-fragment-icon" src="../../Resources/skin/suipian.png"/>
+        </block>
+        <text class="signin-reward-count" style="color:{{state >= 0 ? 'white' : '#a47a6b'}}">+{{rewardCount}}</text>
+      </view>
+      <block wx:if="{{state == 2}}">
+        <image class="signin-gou-icon" src="../signin/img/gou_lvse.png"/>
+      </block>
+      <block wx:elif="{{state == 1}}">
+        <image class="signin-gou-icon" src="../signin/img/gou_lanse.png"/>
+      </block>
+      <block wx:elif="{{state == -1}}">
+        <button data-id="buqian_{{day}}" class="signin-buqian" hover-class='button-click' bindtap='onBuqianSignin' open-type='share'>补签</button>
+      </block>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="signin-item signin-item-day7" style="background:{{state < 0 ? '#e5dac9' : state == 1 ? '#83cec4' : '#ff7979'}}">
+      <text class="signin-item-title" style="color:{{state >= 0 ? 'white' : '#a47a6b'}}">连续签到{{day}}天</text>
+      <block wx:if="{{rewardColor}}">
+        <view class="signin-skin-view" style='width:60rpx;height:60rpx;background:{{rewardColor}}'>
+          <image style='width:60rpx;height:60rpx;' src="{{rewardIcon}}" />
+        </view>
+      </block>
+      <block wx:else>
+        <image class="signin-reward-icon" style='width:62.4rpx;height:69.6rpx;' src="{{rewardIcon}}"></image> 
+      </block>
+      <view class="signin-reward-count-view">
+        <block wx:if="{{isFragment}}">
+          <image class="signin-fragment-icon" src="../../Resources/skin/suipian.png"/>
+        </block>
+        <text class="signin-reward-count" style="color:{{state >= 0 ? 'white' : '#a47a6b'}}">+{{rewardCount}}</text>
+      </view>
+    </view>
+  </block>
+</template> 

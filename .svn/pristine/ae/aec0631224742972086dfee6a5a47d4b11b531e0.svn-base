@@ -1,0 +1,62 @@
+.containers{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-color: #fefae8;
+  display: flex;
+  flex-direction: column;
+   align-items: center; 
+}
+.more{
+  width: 655rpx;
+  height: 1150rpx;
+  margin-top: 35rpx;
+  color: #403996;
+}
+
+.gameItem{
+  width: 655rpx;
+  height: 293rpx;
+  border-radius: 10rpx;
+  margin-top: 25rpx;
+  margin-bottom: 18rpx;
+
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4rpx #c1c1c1;
+}
+.gameIcon{
+  width: 655rpx;
+  height: 220rpx;
+  border-top-left-radius: 10rpx;
+  border-top-right-radius: 10rpx;
+}
+.iconUrl{
+  width:51rpx;
+  height:51rpx;
+  border-radius: 25rpx;
+}
+.gameInfo{
+  width: 655rpx;
+  height:73rpx;
+  margin-left:10rpx;
+  display:flex;
+  align-items: center;
+}
+.gameName{
+  color:#908282;
+  font-size: 28rpx;
+  text-decoration-line:  unset;
+  margin-left: 16rpx;
+}
+.tap{
+  height:32rpx;
+  font-size:21rpx;
+  color: white;
+  background-color:  #c1c1c1;
+  padding-left: 15rpx;
+  padding-right: 15rpx;
+  margin-left: 25rpx;
+  border-radius: 8rpx;
+}

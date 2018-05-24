@@ -1,0 +1,32 @@
+<view class='containerbg' style='  background: rgba(1, 1, 1, 0.5);'>
+  <view class='middleSet'>
+    <!--title  -->
+    <view class='titleSet'>
+      <text>设置</text>
+      <view class='close' catchtap='closeSetting'>
+        <image src='./../../Resources/common/cha.png'></image>
+      </view>
+    </view>
+
+    <view class='midSet'>
+      <view class='setBtn' style='margin-top:-45rpx;' hover-class='button-click' bindtap='clickMusic'>
+        <block wx:if="{{isMusicOn}}">
+          <image src='./../../Resources/common/jinyinanniu_2.png'> </image>
+        </block>
+        <block wx:else>
+          <image src='./../../Resources/common/jinyinanniu_1.png'> </image>
+        </block>
+        <text>声音 : {{isMusicOn?"开":"关"}} </text>
+      </view>
+      <button class='kefuBtn' plain='true' open-type="contact" style='padding:0;margin:0;border:none;'>
+        <view class='setBtn'>
+          <image src='./../../Resources/common/kefu.png'> </image>
+        </view>
+        <text style='color: #ba8260;margin-top:-6rpx;font-size: 30rpx;font-weight: bolder;'>客服帮助</text>
+      </button>
+    </view>
+
+
+
+  </view>
+</view>

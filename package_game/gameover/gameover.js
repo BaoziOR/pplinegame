@@ -1,0 +1,8 @@
+//gameover.js
+Page({
+  data: {    
+  },
+  
+
+    
+})

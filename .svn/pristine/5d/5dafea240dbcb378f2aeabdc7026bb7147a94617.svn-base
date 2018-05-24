@@ -1,0 +1,85 @@
+<view class='containerbg' style='  background: rgba(1, 1, 1, 0.5);'>
+  <view class='middle'>
+    <!--title  -->
+    <view class='title'>
+      <text>皮肤</text>
+      <view class='skinClose' catchtap='closeSkin'>
+        <image src='./../../Resources/common/cha.png'></image>
+      </view>
+    </view>
+
+    <scroll-view class='skines' scroll-y="true">
+       <block wx:for="{{skin}}" wx:key="key"> 
+          <template is='group' data="{{items:item}}"/>
+      </block>
+    </scroll-view>
+  </view>
+</view>
+
+<template name="item">
+  <view class='skinitem' >
+    <block wx:if="{{state==3}}">
+    <text style='color:#9ae451'>{{name}}</text>
+    </block>
+    <block wx:elif="{{state>0}}">
+    <text style='color:#8c7561'>{{name}}</text>
+    </block>
+    <block wx:else>
+    <text style='color:#c6b3a3'>{{name}}</text>
+    </block>
+    <view class='bigCircle' style='background-color:{{outColor}};' data-id='{{id}}' catchtap='clickSkin'>
+      <view class='innerCircle' style='background-color:{{innerColor}};'>
+        <view class='skin' style='background-color:{{skinColor}};'>
+          <image src='./../../Resources/skin/{{url}}' />
+        </view>
+      </view>
+    </view>
+    <block wx:if="{{state ==0}}">
+      <view class='bigCircle' style='position:absolute; margin-top:8rpx;background-color:rgba(1,1,1,0.3)'/>
+    </block>
+    <block wx:elif="{{state<0}}">
+      <view class='bigCircle' style='position:absolute; margin-top:15rpx;background-color:rgba(1,1,1,0.3)'/>
+    </block>
+    <!-- 当前使用 -->
+    <block wx:if="{{state==3}}">
+      <view class='useNow'>
+        <image src='./../../Resources/common/gou1.png'></image>
+      </view>
+    </block>
+    <!--点击激活  -->
+    <block wx:elif="{{state==1}}">
+      <view class='clickUse' data-id='{{id}}' catchtap='clickUse' style='background-color:{{activeColor}}; box-shadow: 0 4rpx #e07d04;'>激活</view>
+    </block>
+    <!--收集碎片  -->
+    <block wx:elif="{{state ==0}}">
+      <view class='collectFrag'>
+        <view class='fragPro' style='width:100rpx;'></view>
+        <text class='fragCnt'>5/19</text>
+        <image class='fragimage' src='./../../Resources/common/suipian.png' />
+      </view>
+    </block>
+    <block wx:else>
+    <view style='height:10rpx;'></view>
+    </block>
+  </view>
+</template>
+
+<!--pi  -->
+<template name='group' >
+  <view class='skingroup'>
+   <block wx:for="{{items}}" wx:key="key"> 
+   <!--当前正在使用  -->
+    <block wx:if="{{item.state==3}}">
+    <template is='item' data='{{id:item.id, name:item.name,outColor:"#9ae451",state:item.state,skinColor:item.color,activeColor:"#fd9b23",url:item.url,innerColor:"#dcffae"}}'/>
+    </block>    
+    <!--待激活  -->
+    <block wx:elif="{{item.state==1}}">
+    <template is='item' data='{{id:item.id,name:item.name,outColor:"#fd9b23",state:item.state,skinColor:item.color,activeColor:"#fd9b23",url:item.url,innerColor:"#e5dac9"}}'/>
+    </block>
+    <!--已经激活 或者一个都没有收集到  -->
+    <block wx:else>
+    <template is='item' data='{{id:item.id,name:item.name,outColor:"#fff1dc",state:item.state,skinColor:item.color,activeColor:"#fd9b23",url:item.url,innerColor:"#e5dac9"}}'/>
+    </block>
+     </block> 
+  </view>
+</template>

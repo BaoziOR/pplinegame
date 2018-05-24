@@ -1,0 +1,699 @@
+@import "../dialog/public.wxss";
+@import "../notice/notice.wxss";
+@import "../signin/signin.wxss";
+@import "../skin/skin.wxss";
+@import "../dialog/setting.wxss";
+
+.containers {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: #fefae8;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* 背景动画 */
+.bgAnim {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.block1 {
+  width: 55rpx;
+  height: 55rpx;
+  background-color: #f2d3aa;
+  border-radius: 10rpx;
+  z-index: -1;
+}
+
+@keyframes circle-action {
+  0% {
+    transform: translateY(0rpx) rotate(45deg);
+  }
+  100% {
+    transform: translateY(1400rpx) rotate(360deg);
+  }
+}
+
+@keyframes circle-action1 {
+  0% {
+    animation-delay: 20s;
+    transform: translateY(100rpx) rotate(90deg);
+  }
+  100% {
+    transform: translateY(1400rpx) rotate(360deg);
+  }
+}
+
+.block2 {
+  width: 40rpx;
+  height: 40rpx;
+  background-color: #f2d3aa;
+  border-radius: 8rpx;
+  z-index: -1;
+}
+
+.block3 {
+  width: 20rpx;
+  height: 20rpx;
+  background-color: #fefae8;
+  border-radius: 5rpx;
+  margin-left: 17rpx;
+  margin-top: 17rpx;
+  z-index: -1;
+}
+
+/* //标题 */
+.titlebg {
+  width: 423rpx;
+  height: 147rpx;
+  margin-top: 2%;
+  animation: comeDown 0.5s linear 1;
+}
+.kefu{
+  position: absolute;
+  width: 140rpx;
+  height: 40rpx;  
+  /* background-color: red; */
+  top:25rpx;
+  right:20rpx;  
+}
+
+@keyframes comeDown {
+  0% {
+    transform: translateY(-180rpx);
+  }
+  30% {
+    transform: translateY(40rpx);
+  }
+  60% {
+    transform: translateY(-30rpx);
+  }
+  90% {
+    transform: translateY(10rpx);
+  }
+  100% {
+    transform: translateY(0rpx);
+  }
+}
+
+.lineline {
+  width: 486rpx;
+  height: 405rpx;
+  margin-top: 20rpx;
+}
+
+.canvas {
+  position: fixed;
+  width: 486rpx;
+  height: 405rpx;
+  z-index: 1;
+}
+
+.canvasCircle {
+  position: fixed;
+  width: 486;
+  height: 405rpx;
+  z-index: 2;
+}
+
+.canvasView {
+  height: 426rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.lineItem {
+  width: 82rpx;
+  height: 82rpx;
+  border-style: solid;
+  border-width: 1rpx;
+  border-color: #e3d5b7;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.circleItem {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 34rpx;
+  position: absolute;
+}
+
+.top{
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.mid {
+  /* position: relative;
+  height: 38%;
+  top: 2%; */
+  /* 20rpx; */
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.level {
+  width: 378rpx;
+  height: 41rpx;
+  color: #cf9a77;
+  font-size: 31rpx;
+  font-weight: bolder;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lvTxt {
+  color: #ff7ab5;
+  font-size: 35rpx;
+}
+
+.btnbg {
+  position: relative;
+  height: 134rpx;
+  background-color: #ead2b8;
+  margin-top: 6%;
+  border-radius: 10rpx;
+  animation-delay: 1s;  
+}
+
+@keyframes breath {
+  0% {
+    transform: scale(0.9, 0.9);
+  }
+  50% {
+    transform: scale(1.1, 1.1);
+  }
+  100% {
+    transform: scale(0.9, 0.9);
+  }
+}
+
+.btn-long {
+  width: 100rpx;
+  height: 4rpx;
+  background-color: #f5c12c;
+  border-radius: 10rpx;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+  font-size: 41rpx;
+  display: flex;
+  flex-direction: column;
+  border-top-width: 60rpx;
+  border-bottom-width: 60rpx;
+  border-left-width: 190rpx;
+  border-right-width: 190rpx;
+  border-style: solid;
+  border-color: transparent #f8ca2b;
+  box-shadow: 0 10rpx #e99430;
+}
+
+.btn-normal{
+  width: 108rpx;
+  height: 4rpx;
+  background-color: #f5c12c;
+  border-radius: 10rpx;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+  font-size: 41rpx;
+  display: flex;
+  flex-direction: column;
+  border-top-width: 60rpx;
+  border-bottom-width: 60rpx;
+  border-left-width: 110rpx;
+  border-right-width: 110rpx;
+  border-style: solid;
+  border-color: transparent #f8ca2b;
+  box-shadow: 0 10rpx #e99430;
+}
+
+.btn-special-view{
+  width: 750rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.btnSpecial-short {
+  position: relative;
+  left: 15rpx;
+  width: 30rpx;
+  height: 4rpx;
+  background-color: #61d2c3;
+  border-radius: 10rpx;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+  font-size: 35rpx;
+  display: flex;
+  flex-direction: column;
+  border-top-width: 60rpx;
+  border-bottom-width: 60rpx;
+  border-left-width: 100rpx;
+  border-right-width: 100rpx;
+  border-style: solid;
+  border-color: transparent #6adcc9;
+  box-shadow: 0 10rpx #35a2a6;
+}
+
+.btnSpecial-normal {
+  width: 108rpx;
+  height: 4rpx;
+  background-color: #61d2c3;
+  border-radius: 10rpx;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+  font-size: 41rpx;
+  display: flex;
+  flex-direction: column;
+  border-top-width: 60rpx;
+  border-bottom-width: 60rpx;
+  border-left-width: 110rpx;
+  border-right-width: 110rpx;
+  border-style: solid;
+  border-color: transparent #6adcc9;
+  box-shadow: 0 10rpx #35a2a6;
+}
+
+.btnActivity {
+  position: relative;
+  right: 15rpx;
+  width: 30rpx;
+  height: 4rpx;
+  background-color: #8acbff;
+  border-radius: 10rpx;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+  font-size: 35rpx;
+  display: flex;
+  flex-direction: column;
+  border-top-width: 60rpx;
+  border-bottom-width: 60rpx;
+  border-left-width: 100rpx;
+  border-right-width: 100rpx;
+  border-style: solid;
+  border-color: transparent #96cfff;
+  box-shadow: 0 10rpx #56a3da;
+}
+
+.tili {
+  height: 40rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  color: #cea181;
+  font-size: 25rpx;
+  font-weight: bold;
+  margin-top: 18rpx;
+  background-color: #efe7d2;
+  border-radius: 15rpx;
+  width: 120rpx;
+  padding-left: -60rpx;
+  padding-right: 30rpx;
+  z-index: 20;
+}
+
+/*开始按钮  */
+.starttxtShow {
+  width: 178rpx;
+  height: 55rpx;
+  margin-top: -33rpx;
+  margin-left: 8rpx;
+  align-self: center;
+}
+
+.suo-short {
+  position: absolute;
+  left: 90rpx;
+  top: -20rpx; 
+  width: 32rpx;
+  height: 42rpx;
+}
+
+.suo-nomral{
+  position: absolute;
+  left: 290rpx;
+  top: 47rpx; 
+  width: 32rpx;
+  height: 42rpx;
+}
+
+@keyframes suomove {
+  0% {
+    transform: rotateX(0deg);
+  }
+  10% {
+    transform: rotateX(-30deg);
+  }
+  30% {
+    transform: rotateX(20deg);
+  }
+  60% {
+    transform: rotateX(-10deg);
+  }
+  90% {
+    transform: rotateX(5deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+.point-normal {
+  position: absolute;
+  right: 30rpx;
+  top: 5rpx;
+  width: 30rpx;
+  height: 30rpx;
+  background-color: #ff7e69;
+  border-radius: 15rpx;
+  animation: breath 3s ease-in-out infinite;
+}
+
+.point-short {
+  position: absolute;
+  left: 100rpx;
+  top: -55rpx;
+  width: 30rpx;
+  height: 30rpx;
+  background-color: #ff7e69;
+  border-radius: 15rpx;
+  animation: breath 3s ease-in-out infinite;
+}
+
+.icon-new{
+  position: absolute;
+  right: 45rpx;
+  top: 0rpx;
+  width: 89rpx;
+  height: 67rpx;
+} 
+
+.starttxt {
+  width: 100%;
+  height: 55rpx;
+  margin-top: 50rpx;
+  margin-left: 15rpx;
+}
+
+.tiliIcon {
+  width: 38rpx;
+  height: 40rpx;
+  margin-left: -15rpx;
+  padding-right: 30rpx;
+}
+
+.activity-view{
+  width: 750rpx;
+  height: 120rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-end;
+  margin-top: 10rpx;
+  z-index: 13;
+}
+
+/*公众号  */
+.publicbtn{
+  width: 177rpx;
+  height: 99rpx;
+  z-index: 11;
+  position: relative;
+  left: 40rpx;
+}
+
+.publicicon{
+  width: 184rpx;
+  height: 99rpx;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.moregame {
+  position: absolute;
+  top: 20rpx;
+  right: 10rpx;
+  width: 121rpx;
+  height: 136rpx;
+  font-size: 28rpx;
+  color: #a37b57;
+  z-index: 11;
+}
+
+
+.music {
+  position: absolute;
+  top: 80rpx;
+  left: 10rpx;
+  width: 76rpx;
+  height: 78rpx;
+  z-index: 11;
+}
+.musicIcon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 76rpx;
+  height: 78rpx;
+}
+
+.moreicon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 121rpx;
+  height: 136rpx;
+  border-radius: 30rpx;
+}
+
+.moreTxt {
+  margin-left: 13rpx;
+  font-weight: bold;
+}
+
+/* 关卡列表 好友排名*/
+.listEasy {
+  width: 398rpx;
+  height: 39rpx;
+  color: #cf9a77;
+  font-size: 32rpx;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10rpx;
+  margin-bottom: 47rpx;
+  z-index: 10;
+}
+
+.list {
+  position: relative;
+  width: 750rpx;
+  height: 250rpx;
+  top: 130rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-left: 10rpx;
+  margin-right: 10rpx;
+}
+
+.btnview {
+  width: 280rpx;
+  height: 220rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-right: 15rpx;
+  margin-left: 15rpx;
+}
+
+.btnshadow {
+  width: 280rpx;
+  height: 80rpx;
+  background-color: #e9d0b3;
+  border-radius: 10rpx;
+}
+
+.btnlist {
+  width: 280rpx;
+  height: 64rpx;
+  box-shadow: 0 7rpx;
+  color: white;
+  font-weight: bolder;
+  font-size: 32rpx;
+  border-radius: 10rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tipview {
+  color: #cf9a77;
+  font-size: 30rpx;
+  justify-content: flex-end;
+  align-content: flex-end;
+  align-items: flex-end;
+  margin-right: 10rpx;
+}
+
+.tiptxt {
+  width: 150rpx;
+  height: 80rpx;
+  position: absolute;
+  top: 10rpx;
+  margin-left: 10rpx;
+  margin-right: 10rpx;
+}
+
+.firendnum {
+  color: #36c5e7;
+  font-size: 34rpx;
+  padding-right: 10rpx;
+}
+
+.btntip {
+  width: 177rpx;
+  height: 128rpx;
+}
+
+.containerbg {
+  width: 100%;
+  height: 100%;
+  background: rgba(1, 1, 1, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  position: fixed;
+}
+
+.mid2 {
+  width: 530rpx;
+  height: 440rpx;
+  margin-bottom: 158rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  z-index: 1;
+  background-color: #fefae8;
+  border-radius: 10rpx;
+  font-size: 32rpx;
+  color: #cf9a77;
+}
+
+.content {
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  margin-bottom: 18rpx;
+}
+
+.aixin {
+  height: 40rpx;
+  width: 38rpx;
+}
+
+.contentTip {
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  margin-top: 8rpx;
+  color: #cbb3a2;
+  font-size: 28rpx;
+}
+
+.btns {
+  width: 500rpx;
+  height: 70rpx;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30rpx;
+}
+
+.no {
+  width: 186rpx;
+  height: 70rpx;
+  border-width: 4rpx;
+  border-style: solid;
+  border-color: #d3b09b;
+  border-radius: 10rpx;
+  margin-left: 45rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.yesshadow {
+  width: 200rpx;
+  height: 76rpx;
+  background-color: #dfc6b0;
+  margin-right: 45rpx;
+  border-radius: 10rpx;
+  margin-top: 6rpx;
+}
+
+.yes {
+  width: 200rpx;
+  height: 70rpx;
+  background-color: #95d130;
+  box-shadow: 0 6rpx #6ea50f;
+  border-radius: 10rpx;
+  position: relative;
+  top: -6rpx;
+  display: flex;
+  color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.setting{
+  width:103rpx;
+  height:112rpx;
+  padding-left: 0;
+  padding-right: 0;
+}
+.redTip{
+  position: relative;
+  width:20rpx;
+  height:20rpx;
+  border-radius: 10rpx;
+  margin-top:-110rpx;
+  margin-left: 80rpx;
+  background-color:white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

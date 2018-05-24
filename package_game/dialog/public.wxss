@@ -1,0 +1,74 @@
+/* 服务号 */
+.containerPublic{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(1, 1, 1, 0.7);
+}
+.midPublic{
+  width: 631rpx;
+  height: 889rpx;
+  position: absolute;
+  left: 59.5rpx;
+  top: 150rpx;
+  z-index: 99;
+}
+
+.closebtn{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 98;
+}
+
+.hand{
+  width: 75rpx;
+  height: 110rpx;
+  position: absolute;
+  top: 30rpx;
+  right: 95rpx;
+  z-index: 100;
+  animation: handmove 1s linear infinite alternate;
+}
+
+@keyframes handmove {
+  0% {
+    transform: translateY(-30rpx);
+  }
+  100% {
+    transform: translateY(0rpx);
+  }
+}
+
+/*我知道了  */
+.know{
+  width: 302rpx;
+  height: 100rpx;
+  /* margin-top: -150rpx; */
+  background-color: #95d130;
+  border-radius: 20rpx;
+  /* box-shadow: 0 10rpx #6da313; */
+  color:white;
+  font-weight: bolder;
+  font-size: 36rpx;
+  text-shadow: 1rpx #61881f; 
+  text-align: center;
+  line-height: 90rpx;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-self: center; */
+}
+
+.know-bg{
+  width: 302rpx;
+  height: 110rpx;
+  margin-top: -150rpx;
+  background-color: #6da313;
+  border-radius: 20rpx;
+}

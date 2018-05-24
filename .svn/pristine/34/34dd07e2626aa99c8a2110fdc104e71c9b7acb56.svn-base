@@ -1,0 +1,1258 @@
+//index.js
+var consts = require('./../../utils/consts.js').consts;//const数据
+var utilLog = require('./../../utils/util.js').log;//log
+var util = require('./../../utils/util.js');
+var commonDraw = require('./../../utils/commonDraw.js').chessDraw;//棋盘绘制
+// var collect = require('../../data/moregames.js').more;//
+var datasTest = require('../moregame/datasTest.js').datatest;
+var noticeTest = require('./noticetest').noticetest;
+var signinTest = require('./signintest').signintest;
+
+var chess_C;
+var app = getApp();
+var login;
+var canvas;
+var canvasCircle;
+var canvasTimer;
+var clearTimer;
+var tempFriend;
+var colorTips = [
+  [[4, 1], [4, 1.5], [4, 2], [4, 2.5], [4, 3], [4, 3.5], [4, 4], [4, 4.5], [4, 5], [3.5, 5], [3, 5]],
+  [[0, 5], [0, 4.5], [0, 4], [0, 3.5], [0, 3], [0, 2.5], [0, 2], [0.5, 2], [1, 2], [1.5, 2], [2, 2], [2, 1.5], [2, 1], [2, 0.5], [2, 0], [2.5, 0], [3, 0], [3.5, 0], [4, 0]],
+  [[1, 0], [1, 0.5], [1, 1], [0.5, 1], [0, 1], [0, 0.5], [0, 0]],
+  [[2, 5], [1.5, 5], [1, 5], [1, 4.5], [1, 4], [1, 3.5], [1, 3], [1.5, 3], [2, 3], [2, 3.5], [2, 4], [2.5, 4], [3, 4], [3, 3.5], [3, 3], [3, 2.5], [3, 2], [3, 1.5], [3, 1]]
+];
+var checkerboard = [
+  [3, 0, 0, 0, 0, 2],
+  [3, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 4],
+  [0, 4, 0, 0, 0, 1],
+  [2, 1, 0, 0, 0, 0],
+];
+var chessColor = ["#e78cc9", "#a9e445", "#9b9b9b", "#78bff6"];
+var alreadyDraw = 1;//当前已经画了几种颜色线条
+var alreadyDrawStep = 0;//当前已经绘制了线条的第几步
+var preSkin = null;
+var skines = null;//皮肤数组
+
+var getArr=null;
+
+
+Page({
+  data: {
+    openId: '',
+    getbonus: false,
+    showBonus: false,
+    commonUrl: "../../Resources/common/",
+    skinUrl: "../../Resources/skin/",
+
+    bonusAward: null,
+    bonusAwardUrl: ['./../../Resources/common/jinbi.png', './../../Resources/common/teshuhuobi.png', './../../Resources/common/suipian.png'],
+    isPublic: false,//是否打开服务号
+    isHoliday: false,
+    // isLoginIn: false,//是否已经登陆成功
+
+    isMusicOn: true,//musicOn
+    isNumOn: false,
+    levelId: 1,
+    tili: 10,
+    maxTili: 30,
+    userInfo: null,//用户信息
+
+    showLogInchess: false,//是否显示打印信息在棋盘中
+    viewChessSize: 82,//
+    chessMargin: 12,//棋盘中点的偏移大小
+    chessItemSize: 80,//棋盘中每个点的间隔大小
+
+    showHoliday: false,//展示节日
+
+    showDialog: false,
+    pauseCanvas: false,
+    alpha: 0.7,
+    prop: '体力',
+    dialogId: 0,
+    shareOrNot: "share",
+    maxProp: 20,
+    leftProp: 0,
+    tiliRecoverTime: [1, 0, 0],
+    isSpecialOpen: false,//特殊关卡打开
+    isNewOpen: true,//是否有新的特殊大关卡开启
+    showSkin: false,//是否打开皮肤
+    colletcion: null,//更多游戏合集,
+    openDoll: false, // 是否开启抓娃娃模块,
+    notice: null, // 公告
+    signin: null,  // 签到数据
+    openSignin: false, // 是否打开签到
+    openSigninTip: false, // 是否显示签到小红点
+  },
+
+  //当navigateTo或底部tab切换时调用。
+  onHide: function () {
+    if (canvasTimer != null) {
+      clearInterval(canvasTimer);
+      canvasTimer = null;
+    }
+
+    //这里不销毁时再次跳转进来canvas内容不显示
+    if (chess_C != null) {
+      chess_C.destroy();
+    }
+    canvas = null;
+    canvasCircle = null;//这里不销毁时再次跳转进来canvas内容不显示
+  },
+
+  //当使用重定向方法wx.redirectTo(OBJECT)或关闭当前页返回上一页wx.navigateBack()，触发onUnload。
+  onUnload: function () {
+
+    if (canvasTimer != null) {
+      clearInterval(canvasTimer);
+      canvasTimer = null;
+    }
+
+    //这里不销毁时再次跳转进来canvas内容不显示
+    if (chess_C != null) {
+      chess_C.destroy();
+    }
+    canvas = null;
+    canvasCircle = null;//这里不销毁时再次跳转进来canvas内容不显示
+  },
+
+  onLoad: function (ops) {
+    login = this;
+
+    try {
+      if (skines == null) {
+        skines = [];
+
+        var curSkin = app.globalData.otherInfo != null ? app.globalData.otherInfo.curSkin : 0;
+        var state = app.globalData.otherInfo.skinState;
+        for (var i in app.globalData.skinConfig) {
+          var item = app.globalData.skinConfig[i];
+          var isCurSkin = (item.id - 1) == curSkin;
+          var key = "" + (item.id - 1);
+          if (!state.hasOwnProperty(key)) {
+            state[key] = [-1, 0];
+          }
+          if (isCurSkin) {
+            state[key][0] = 3;
+          } else if (state[key][0] == 3) {
+            state[key][0] = 2;
+          }
+          if (state[key][0] < 2) {
+            if (state[key][1] > 0) {
+              if (state[key][1] >= item.fragment) {
+                if (state[key][0] < 2) {
+                  state[key][0] = 1;//待激活 
+                }
+              } else {
+                state[key][0] = 0;//收集碎片中
+              }
+            } else {
+              state[key][0] = -1;//啥都没有
+            }
+          }
+          item.state = state[key][0];
+          item.prop = state[key][1] + "/" + item.fragment;
+          skines.push(item);
+        }
+      }
+      var id = -1;
+      var resetAward = [];
+      if (app.globalData.oldPlayerAward != null) {
+        id = app.globalData.oldPlayerAward.length - 1;
+        while (id >= 0 && id < app.globalData.oldPlayerAward.length) {
+          var item = app.globalData.oldPlayerAward[id];
+          if (getArr==null){
+            getArr = [];
+          }
+          getArr.push(item.id - 1);
+          var isnew = true;
+          for (var i = 0; i < resetAward.length; i++) {
+            if (item.awardtype[0] == resetAward[i].awardtype[0]) {
+              resetAward[i].awardnum += item.awardnum;
+              isnew = false;
+              break;
+            }
+          }
+          if (isnew) {
+            resetAward.push(item);
+          }
+          app.globalData.oldPlayerAward.splice(id, 1);
+          id = app.globalData.oldPlayerAward.length - 1;
+        }        
+      }
+
+      login.setData({
+        getbonus: (app.globalData.oldPlayerAward != null),
+        openId: app.globalData.openId,
+        bonusAward: resetAward,//app.globalData.oldPlayerAward,
+        skin: skines,//skinArr,
+      });
+      // console.log("皮肤配置", app.globalData.skinConfig);
+      preSkin = {};
+      preSkin.id = app.globalData.otherInfo.curSkin;
+      preSkin.skin = login.data.skin[app.globalData.otherInfo.curSkin];
+    }
+    catch (err) {
+      console.log("menu 首页展示报错", err);
+    }
+    if (canvas == null) {
+      canvas = wx.createCanvasContext('canvas');
+    }
+    if (chess_C == null) {
+      chess_C = new commonDraw(canvas, app.globalData.screenScale,
+        login.data.chessItemSize,
+        42, 42, 13,
+        240, 200,
+        40, 40,
+        1, 1,
+        5, 6,
+        1.5, '#e3d5b7',
+        '#f0e7d2',
+        checkerboard, chessColor
+      );
+    }
+    //绘制棋盘线路
+    if (canvasTimer == null) {
+      canvasTimer = setInterval(login.updateTeachAnim, 75);
+    }
+    this.getMoreGame();
+    this.getNotice();
+  },
+
+  //点击老玩家bonus领取奖励
+  closeBonus: function () {
+    for (var i = 0; i < login.data.bonusAward.length; i++) {
+      var bonus = login.data.bonusAward[i];
+      app.getAwardLogic(bonus.awardnum, bonus.awardtype, true);           
+    }
+    wx.showToast({
+      title: '领取成功'
+    })
+    app.globalData.oldPlayerAward = [];
+    var ischange = false;
+    while (getArr.length>0){
+      ischange = true;
+      app.globalData.baseInfo.awardpro[getArr[getArr.length-1]] = 1;
+      getArr.splice(getArr.length-1,1);
+    }
+    if (ischange){
+      app.globalData.sessCheckMax = 0;
+      app.setUserData(app.globalData.openIdKey, consts.TYPE_BASE, JSON.stringify(app.globalData.baseInfo).toString());
+    }
+    login.setData({
+      showBonus: false,
+      pauseCanvas:false,
+    })
+    if (chess_C != null) {
+      chess_C.draw(false, 0);
+    }
+  },
+  clickBonus: function () {
+
+    login.setData({
+      getbonus: false,
+      showBonus: true,
+      pauseCanvas:true,
+    })
+  },
+
+  // 获取更多好玩
+  getMoreGame: function () {
+    app.playClickSound();
+    //上线时将ran换成我们的版本号方便避免
+    wx.reportAnalytics('more_game', {
+      state: 1,
+    });
+    wx.request({
+      url: app.getCommonResourceUrl() + 'gameCollections.json?ran=' + Math.ceil(Math.random() * 100000),
+      success(res) {
+        // console.log("更多y欧洗", res);
+        app.globalData.gameCollections = res.data;
+        login.setData({
+          colletcion: res.data,
+        })
+        utilLog(res.data);
+      },
+      fail: function () {
+        wx.reportAnalytics('more_game', {
+          state: 0,
+        });
+      }
+    });
+  },
+
+  // 获取公告
+  getNotice: function () {
+    wx.reportAnalytics('notice', {
+      state: 1,
+    });
+    var notice;
+    wx.request({
+      url: app.getCommonResourceUrl() + 'notice.json?ran=' + Math.ceil(Math.random() * 100000),
+      success(res) {
+        notice = res.data;
+        // notice = JSON.parse(noticeTest);
+        if (notice.showType == 0) {
+          // 不显示公告
+          login.checkDailyLogin();
+          return;
+        }
+        if (wx.getStorageSync("notice_" + notice.version) == 1) {
+          // 已看过公告
+          login.checkDailyLogin();
+          return;
+        }
+        if (notice.showType == 1) {
+          // 仅新用户显示
+          if (app.globalData.baseInfo.appVers == consts.VERSION) {
+            login.showNotice(notice);
+          }
+          else {
+            login.checkDailyLogin();
+          }
+        }
+        else if (notice.showType == 2) {
+          // 仅老用户显示
+          if (app.globalData.baseInfo.appVers < consts.VERSION) {
+            login.showNotice(notice);
+          }
+          else {
+            login.checkDailyLogin();
+          }
+        }
+        else if (notice.showType == 3) {
+          // 新老用户都显示
+          login.showNotice(notice);
+        }
+        else {
+          login.checkDailyLogin();
+        }
+      },
+      fail: function () {
+        wx.reportAnalytics('notice', {
+          state: 0,
+        });
+        this.checkDailyLogin();
+      }
+    });
+  },
+
+  // 打开公告
+  showNotice: function (notice) {
+    this.setData({
+      notice: notice,
+      pauseCanvas: true
+    });
+  },
+
+  // 关闭公告
+  onCloseNotice: function () {
+    app.playClickSound();
+    try {
+      wx.setStorageSync("notice_" + this.data.notice.version, 1);
+    }
+    catch (err) {
+      console.log("setStorageSync", err);
+    }
+    this.setData({
+      notice: null,
+      pauseCanvas: false
+    });
+    if (chess_C != null) {
+      chess_C.draw(false, 0);
+    }
+    this.checkDailyLogin();
+  },
+ // 获取广告开始结束时间
+
+
+
+
+  moreGameTest: function () {
+    app.globalData.gameCollections = JSON.parse(datasTest);
+    login.setData({
+      colletcion: app.globalData.gameCollections
+    })
+    // console.log(this.data.colletcion);
+  },
+
+  onShow: function () {
+    alreadyDrawStep = 0;
+    alreadyDraw = 1;
+    if (canvas == null) {
+      canvas = wx.createCanvasContext('canvas');
+    }
+    if (chess_C.getCanvas() == null) {
+      chess_C.setCanvas(canvas);
+    }
+    if (chess_C != null) {
+      chess_C.resetDraw();
+    }
+
+    if (canvasCircle == null) {
+      canvasCircle = wx.createCanvasContext("circleCanvas");
+    }
+    if (canvasTimer == null) {
+      canvasTimer = setInterval(login.updateTeachAnim, 75);
+    }
+    var complete = 0;//总共完成多少关
+    for (var i = 0; i < app.globalData.levelAllContent.length; i++) {
+      var types = app.globalData.levelAllContent[i];
+      for (var j = 0; j < types.length; j++) {
+        var levelNum = 0;
+        // maxNum = types[j].levelnum;
+        if (app.globalData.baseInfo.levelProgress[i] != null && app.globalData.baseInfo.levelProgress[i][j] != null) {
+          levelNum = app.globalData.baseInfo.levelProgress[i][j];
+        }
+        if (levelNum > 0) {
+          complete += (levelNum - 1);
+        }
+      }
+    }
+    var open = false;
+    // open = app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_NORMAL][0] > app.globalData.levelAllContent[consts.LEVELTYPE_NORMAL][0].levelnum;
+    var already = true;
+    if (app.globalData.baseInfo == null) {
+      already = false;
+    } else if (app.globalData.baseInfo.alReadyOpen == null || typeof (app.globalData.baseInfo.alReadyOpen) == 'undefined') {
+      app.globalData.baseInfo.alReadyOpen = false;
+      already = false;
+    }
+    app.tdsdk.event({
+      id: 'complete_level',
+      label: '玩家每次登陆游戏后通关关卡的数量',
+      params: {
+        count: complete
+      }
+    });
+    open = (complete >= 200);
+    var isnew = (open && !already);
+    login.setData({
+      levelId: complete,//app.globalData.levelbiglittle,
+      isSpecialOpen: open,
+      isNewOpen: isnew,
+      viewChessSize: 82 * app.globalData.screenScale,
+      userInfo: app.globalData.userInfo,
+      isMusicOn: app.globalData.musicOn,
+      isNumOn: app.globalData.colorWeak
+    });
+
+    if( (!app.globalData.otherInfo.hasOwnProperty("focusPub")||
+      (app.globalData.otherInfo.hasOwnProperty("focusPub") && !app.globalData.otherInfo.focusPub)) && app.globalData.isPublicIn)
+      {
+      app.globalData.otherInfo.focusPub = app.globalData.isPublicIn;
+      app.getAwardLogic(50, [2], false);      
+      app.globalData.sessCheckMax = 0;
+      app.setUserData(app.globalData.openIdKey, consts.TYPE_OTHER, JSON.stringify(app.globalData.otherInfo).toString());
+    }
+  },
+
+  // 检测每日签到
+  checkDailyLogin: function () {
+    var sundayDate = app.getSundayTime(app.globalData.dateTime, app.globalData.day);
+    console.log("todayDate " + app.globalData.date);
+    console.log("sundayDate " + sundayDate);
+    this.getSignin(sundayDate);
+  },
+
+  getSignin: function (sundayTime, date, day) {
+    wx.reportAnalytics('signin', {
+      state: 1,
+    });
+    var signin;
+    wx.request({
+      url: app.getCommonResourceUrl() + 'signin/signin_' + sundayTime + '.json?ran=' + Math.ceil(Math.random() * 100000),
+      success(res) {
+        if (res.statusCode == 404) {
+          // 保险测试数据，以防服务器上拉不下来
+          signin = JSON.parse(signinTest);
+          login.checkSignin(signin);
+        }
+        else {
+          signin = res.data;
+          // console.log(res.data);
+          login.checkSignin(signin);
+        }
+      },
+      fail: function () {
+        wx.reportAnalytics('signin', {
+          state: 0,
+        });
+      }
+    });
+
+  },
+
+  checkSignin: function (signin) {
+    for (var i = 1; i <= 7; i++) {
+      var item = signin.list[i - 1];
+      var state = app.getLoginState(i, app.globalData.day);
+      // console.log("state " + state);
+      item.state = state;
+      if (item.rewardId == "coin") {
+        // 金币
+        item.rewardIcon = this.data.commonUrl + "jinbi.png";
+      }
+      else if (item.rewardId == "diamond") {
+        // 钻石
+        item.rewardIcon = this.data.commonUrl + "teshuhuobi.png";
+      }
+      else if (util.StartWith(item.rewardId, "skin")) {
+        // 皮肤
+        item.rewardIcon = this.data.skinUrl + app.globalData.skinConfig[item.rewardId].url;
+        item.rewardColor = app.globalData.skinConfig[item.rewardId].color;
+      }
+      else if (util.StartWith(item.rewardId, "fskin")) {
+        // 碎片
+        item.isFragment = true;
+        var rewardId = item.rewardId.substring(1);
+        item.rewardIcon = this.data.skinUrl + app.globalData.skinConfig[rewardId].url;
+        item.rewardColor = app.globalData.skinConfig[rewardId].color;
+      }
+    }
+    var canOpenSignin = true;
+    if (signin.list[app.globalData.day - 1].state != 0) {
+      canOpenSignin = false;
+    }
+    if (app.globalData.baseInfo.appVers == consts.VERSION && !app.globalData.baseInfo.signinFlag) {
+      canOpenSignin = false;
+    }
+    signin.canGetReward = signin.list[app.globalData.day - 1].state == 0;
+    // console.log(signin.canGetReward);
+    this.setData({
+      signin: signin,
+      openSignin: canOpenSignin,
+      pauseCanvas: canOpenSignin
+    });
+    if (canOpenSignin) {
+      wx.updateShareMenu({
+        withShareTicket: true,
+      })
+    }
+    else {
+      this.checkSigninTip();
+    }
+  },
+
+  // 领取签到奖励
+  onGetSigninReward: function () {
+    var item = this.data.signin.list[app.globalData.day - 1];
+    var itemStr = "signin.list[" + (app.globalData.day - 1) + "].state";
+    this.setData({
+      [itemStr]: 2,
+      "signin.canGetReward": false
+    });
+    app.addSignin(app.globalData.day, app.globalData.date);
+    this.getReward(item);
+    app.tdsdk.event({
+      id: 'signin_getreward',
+      label: '签到领取',
+    });
+    this.onCloseSignIn();
+  },
+
+  // 补签
+  onBuqianSignin: function (e) {
+    app.playClickSound();
+    app.tdsdk.event({
+      id: 'signin_clickbuqian',
+      label: '点击补签按钮',
+    });
+  },
+
+  // 获取奖励
+  getReward: function (item) {
+    if (item.rewardId == "coin") {
+      // 金币
+      app.globalData.baseInfo.coinNum += item.rewardCount;
+      console.log("add coin " + item.rewardCount);
+      app.showGetItemToast("coin", "", item.rewardCount, item.rewardIcon);
+    }
+    else if (item.rewardId == "diamond") {
+      // 钻石
+      if (!app.globalData.baseInfo.diam) {
+        app.globalData.baseInfo.diam = 0;
+      }
+      app.globalData.baseInfo.diam += item.rewardCount;
+      console.log("add diamond " + item.rewardCount);
+      app.showGetItemToast("diamond", "", item.rewardCount, item.rewardIcon);
+    }
+    else if (util.StartWith(item.rewardId, "skin")) {
+      // 皮肤
+      app.addProp(item.rewardId, item.rewardCount);
+      var awardId = Number(item.rewardId.substring(4)) - 1;
+      if (login.data.skin[awardId].state < 2) {//母情结的皮肤
+        login.data.skin[awardId].state = 2;
+        login.setData({
+          skin: login.data.skin,
+        });
+      }
+    }
+    else if (util.StartWith(item.rewardId, "fskin")) {
+      // 碎片
+      app.addProp(item.rewardId, item.rewardCount);
+      var rewardId = item.rewardId.substring(1);
+      var _id = Number(item.rewardId.substring(5)) - 1;
+      console.log("皮肤id", _id)
+
+      if (app.globalData.otherInfo.skinState[_id][1] >= app.globalData.skinConfig[rewardId].fragment) {
+        if (login.data.skin[_id].state < 2) {//母情结的皮肤
+          login.data.skin[_id].state = 2;
+        }
+        login.setData({
+          skin: login.data.skin,
+        });
+      }
+      console.log("add fragment " + item.rewardCount);
+      app.showGetItemToast("fskin", app.globalData.skinConfig[rewardId].name + "碎片", item.rewardCount, item.rewardIcon);
+    }
+    app.globalData.sessCheckMax = 0;
+    app.setUserData(app.globalData.openIdKey, consts.TYPE_BASE, JSON.stringify(app.globalData.baseInfo).toString());
+  },
+
+  // 打开签到
+  onOpenSignIn: function () {
+    app.playClickSound();
+    if (this.data.signin) {
+      this.setData({
+        openSignin: true,
+        pauseCanvas: true
+      });
+      wx.updateShareMenu({
+        withShareTicket: true,
+      })
+    }
+    else {
+      this.checkDailyLogin();
+    }
+    app.tdsdk.event({
+      id: 'signin_clicksignin',
+      label: '点击签到按钮',
+    });
+  },
+
+  // 关闭签到
+  onCloseSignIn: function () {
+    app.playClickSound();
+    this.setData({
+      openSignin: false,
+      pauseCanvas: false
+    });
+    if (chess_C != null) {
+      chess_C.draw(false, 0);
+    }
+    this.checkSigninTip();
+    wx.updateShareMenu({
+      withShareTicket: false,
+    })
+  },
+
+  // 检测签到小红点
+  checkSigninTip: function () {
+    var showTip = false;
+    if (this.data.signin) {
+      for (var i = 0; i < this.data.signin.list.length; i++) {
+        if (this.data.signin.list[i].state == -1 || this.data.signin.list[i].state == 0) {
+          showTip = true;
+          break;
+        }
+      }
+    }
+    this.setData({
+      openSigninTip: showTip
+    });
+  },
+
+  updateTeachAnim: function () {
+    var prevalue = alreadyDrawStep;
+    if (chess_C == null || (chess_C.getCanvas()) == null || canvasTimer == null || login.data.pauseCanvas) {
+      return;
+    }
+    alreadyDrawStep++;
+    if (alreadyDrawStep >= (colorTips[alreadyDraw - 1].length)) {
+      alreadyDrawStep = 0;
+      alreadyDraw++;
+      if (alreadyDraw > colorTips.length) {
+        alreadyDraw = 1;
+        if (chess_C != null) {
+          chess_C.resetDraw();
+        }
+      }
+    }
+    if (prevalue != alreadyDrawStep) {
+      login.drawAll();
+    }
+  },
+
+
+  //体力点击--是否跳转到购买或者分享
+  clickTili: function () {
+    app.playClickSound();
+    // utilLog("体力");
+    // // 体力
+  },
+  clickStart: function () {
+    // 开始游戏
+    app.playClickSound();
+    {
+      app.globalData.levelType = consts.LEVELTYPE_NORMAL;
+      app.globalData.levelContent = app.globalData.levelAllContent[app.globalData.levelType];
+      // wx.redirectTo({
+      wx.navigateTo({
+        url: '../biglevel/biglevel?levelType=' + app.globalData.levelType,
+      })
+    }
+  },
+  //特殊关卡开启界面
+  clickSpecialStart: function () {
+    if (!login.data.isSpecialOpen) {
+      wx.showToast({
+        title: '完成200关解锁',
+        image: './../../Resources/common/suo2.png',
+      })
+      return;
+    }
+
+    if (!app.globalData.baseInfo.alReadyOpen) {
+      app.globalData.baseInfo.alReadyOpen = true;
+      if (app.globalData.baseInfo.levelProgress != null) {
+        if (app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_TOWER] == null || typeof (app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_TOWER]) == 'undefined') {
+          app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_TOWER] = [];
+        }
+        if (app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_TOWER][0] == null || typeof (app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_TOWER][0]) == 'undefined') {
+          app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_TOWER][0] = 1;
+        }
+      }
+      app.globalData.sessCheckMax = 0;
+      app.setUserData(app.globalData.openIdKey, consts.WX_BASE, JSON.stringify(app.globalData.baseInfo).toString());
+    }
+
+    login.setData({
+      isNewOpen: false,
+    })
+    // 开始特殊游戏
+    app.playClickSound();
+    {
+      app.globalData.levelType = consts.LEVELTYPE_TOWER;
+      app.globalData.levelContent = app.globalData.levelAllContent[app.globalData.levelType];
+      if (app.globalData.baseInfo.levelProgress[app.globalData.levelType] == null ||
+        (typeof (app.globalData.baseInfo.levelProgress[app.globalData.levelType])) == 'undefined') {
+        app.globalData.baseInfo.levelProgress[app.globalData.levelType] = [];
+      }
+      // wx.redirectTo({      
+      wx.navigateTo({
+        url: '../biglevel/biglevel?levelType=' + app.globalData.levelType,
+      })
+    }
+  },
+
+  // 点击抓娃娃关卡
+  clickActivityButton: function () {
+    wx.navigateTo({
+      url: '../main/main',
+    })
+  },
+
+  clicktoLevel: function () {
+    app.playClickSound();
+    utilLog("关卡列表");
+    var curent = app.globalData.levelId;// login.data.allLevels[app.globalData.biglevel].curlevel;
+    var max = app.globalData.levelContent[app.globalData.biglevel].levelnum;
+    var title = app.globalData.levelContent[app.globalData.biglevel].levelname;
+    wx.navigateTo({
+      url: '../littlelevel/littlelevel?cur=' + curent + '&max=' + max + '&title=' + title,
+    })
+    // 关卡列表
+    // wx.navigateTo({
+    //   url: '../littlelevel/littlelevel',
+    // })
+  },
+
+  clicktoRank: function () {
+    app.playClickSound();
+    // 排行榜
+    wx.navigateTo({
+      url: '../rank/rank',
+    })
+  },
+  // canvas的点点绘制
+  drawAll: function () {
+    if (canvasCircle == null) {
+      canvasCircle = wx.createCanvasContext("circleCanvas");
+    }
+    var colorneed = Math.min(alreadyDraw, colorTips.length);
+
+    //绘制线条
+    var x = 0;
+    var y = 0;
+    var i = alreadyDraw - 1;
+    if (chess_C != null) {
+      var pos = chess_C.drawLine(colorTips[i], i, alreadyDrawStep);
+      x = pos[0];
+      y = pos[1];
+    }
+    //绘制移动的小圆
+    canvasCircle.clearRect(0, 0, 258, 215);
+    canvasCircle.draw();
+    canvasCircle.setGlobalAlpha(0.4);
+    canvasCircle.beginPath();
+    canvasCircle.setFillStyle(chessColor[i]);
+    canvasCircle.arc(x, y, 20, 0, 2 * Math.PI, true);//设置一个原点(100,50)，半径为为50的圆的路径到当前路径  
+    canvasCircle.closePath();//关闭当前路径  
+    canvasCircle.fill();//对当前路径进行描边 
+    canvasCircle.draw(false);
+    canvasCircle.beginPath();
+    canvasCircle.setGlobalAlpha(1);
+    canvasCircle.setFillStyle(chessColor[i]);
+    canvasCircle.arc(x, y, 11, 0, 2 * Math.PI, true);//设置一个原点(100,50)，半径为为50的圆的路径到当前路径  
+    canvasCircle.closePath();//关闭当前路径  
+    canvasCircle.fill();//对当前路径进行描边 
+    canvasCircle.draw(true);
+  },
+
+  touchmove: function (ops) {
+  },
+
+  resetGameData: function () {
+    // test跳转到固定的某一关
+    var baseInfo = new Object();
+    app.delUserData(app.globalData.openIdKey, consts.TYPE_BASE);
+    app.delUserData(app.globalData.openIdKey, consts.TYPE_WX);
+    app.delUserData(app.globalData.openIdKey, consts.TYPE_FRIENDS);
+    app.delUserData(app.globalData.openIdKey, consts.TYPE_TIMECOST);
+    wx.clearStorageSync(consts.RECORD_FRIEND);
+    wx.clearStorageSync(consts.RECORD_RECORDS);
+    wx.clearStorageSync(consts.RECORD_COINLEFT);
+    app.globalData.baseInfo = null;
+    if (app.globalData.baseInfo != null) {
+      baseInfo = app.globalData.baseInfo;
+    } else {
+      baseInfo.score = baseInfo.biglevel * 1000 + baseInfo.levelId;
+      baseInfo.coinNum = app.globalData.gameConfig.reginalCoin;
+    }
+    baseInfo.levelId = 1;//app.globalData.levelId;
+    baseInfo.biglevel = 0;// app.globalData.biglevel;
+    // app.globalData.levelbiglittle = 1;
+    baseInfo.levelProgress = null;
+
+
+    app.globalData.baseInfo = baseInfo;
+    app.globalData.sessCheckMax = 0;
+    app.setUserData(app.globalData.openIdKey, consts.TYPE_BASE, JSON.stringify(baseInfo).toString());
+    app.globalData.levelId = 1;
+    app.globalData.biglevel = 0;
+    login.setData({
+      levelId: 0,
+    });
+  },
+
+  ////////////////设置////////////////////
+  // 点击设置
+  clickSetting: function () {
+    // console.log("设置");
+    login.setData({
+      pauseCanvas: true,
+      showSetting: true,
+    })
+  },
+  //关闭设置
+  closeSetting: function () {
+    login.setData({
+      pauseCanvas: false,
+      showSetting: false,
+    })
+    if (chess_C != null) {
+      chess_C.draw(false, 0);
+    }
+  },
+  ///////////////////////////////////////
+  clickColorLv: function () {    
+    if (app.globalData.baseInfo.levelProgress != null) {
+      if (app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_COLORFULLEVEL] == null || typeof (app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_COLORFULLEVEL]) == 'undefined') {
+        app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_COLORFULLEVEL] = [];
+      }
+      if (app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_COLORFULLEVEL][0] == null || typeof (app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_COLORFULLEVEL][0]) == 'undefined') {
+        app.globalData.baseInfo.levelProgress[consts.LEVELTYPE_COLORFULLEVEL][0] = 1;
+      }
+    }
+    app.globalData.sessCheckMax = 0;
+    app.setUserData(app.globalData.openIdKey, consts.WX_BASE, JSON.stringify(app.globalData.baseInfo).toString());
+
+    app.playClickSound();
+    app.globalData.levelType = consts.LEVELTYPE_COLORFULLEVEL;
+    app.globalData.levelContent = app.globalData.levelAllContent[app.globalData.levelType];
+    wx.navigateTo({
+      url: '../biglevel/biglevel?levelType=' + app.globalData.levelType,
+    })
+  },
+
+  /////////// 皮肤 /////////////
+  clickSkinBtn: function () {
+    app.playClickSound();
+    // console.log("皮肤");
+    login.setData({
+      showSkin: true,
+      showSetting:false,
+      pauseCanvas: true,
+    })
+  },
+  //点击可使用皮肤
+  clickSkin: function (ops) {
+    // console.log("点击皮肤", ops);
+    // var id = Math.floor((ops.currentTarget.dataset.id - 1) / 3);
+    // var id_ = Math.ceil((ops.currentTarget.dataset.id - 1) % 3);
+    var id = ops.currentTarget.dataset.id - 1;
+    var skinItem = login.data.skin[id];//[id][id_];
+    if (skinItem.state != 2) {
+      if (skinItem.state <= 0) {
+        wx.showToast({
+          title: skinItem.tip,
+          icon: 'none',
+          duration: 1000,
+        });
+      }
+      return;//只有激活过的皮肤才可以点击使用
+    }
+    if (skinItem.state == 2) {
+      skinItem.state = 3;
+      app.globalData.otherInfo.curSkin = skinItem.id - 1;
+      app.globalData.otherInfo.skinState[skinItem.id - 1][0] = 3;
+      var skinName = app.globalData.skinConfig["skin" + skinItem.id].name;
+      app.tdsdk.event({
+        id: 'currentSkin',
+        label: '玩家当前使用皮肤',
+        params: {
+          name: skinName
+        }
+      });
+    }
+    if (preSkin != null) {
+      if (preSkin.skin.state == 3) {
+        preSkin.skin.state = 2;
+        app.globalData.otherInfo.skinState[preSkin.id][0] = 2;
+      }
+    }
+    app.globalData.sessCheckMax = 0;
+    app.setUserData(app.globalData.openIdKey, consts.TYPE_OTHER, JSON.stringify(app.globalData.otherInfo).toString());
+    login.data.skin[id]/* [id_]  */ = skinItem;
+    if (preSkin != null) {
+      login.data.skin[preSkin.id]/* [preSkin.id_] */ = preSkin.skin;
+    }
+    login.setData({
+      skin: login.data.skin
+    });
+    preSkin.skin = skinItem;
+    preSkin.id = id;
+    // preSkin.id_ = id_;
+  },
+  //点击激活皮肤
+  clickUse: function (ops) {
+    var id = ops.currentTarget.dataset.id - 1;// Math.floor((ops.currentTarget.dataset.id - 1) / 3);
+    // var id_ = Math.ceil((ops.currentTarget.dataset.id - 1) % 3);
+    var skinItem = login.data.skin[id];//[id_];
+    if (skinItem.state != 1) {
+      return;
+    }
+    skinItem.state = 2;
+    app.globalData.otherInfo.skinState[skinItem.id - 1][0] = 2;
+    app.globalData.sessCheckMax = 0;
+    app.setUserData(app.globalData.openIdKey, consts.TYPE_OTHER, JSON.stringify(app.globalData.otherInfo).toString());
+    login.data.skin[id]/* [id_] */ = skinItem;
+    login.setData({
+      skin: login.data.skin
+    });
+  },
+  closeSkin: function () {
+    app.playClickSound();
+    login.setData({
+      pauseCanvas: false,
+      showSkin: false,
+    })
+    if (chess_C != null) {
+      chess_C.draw(false, 0);
+    }
+  },
+  ///////////////////////////////
+
+  ////////////////设置////////////////////
+  // 点击设置
+  clickSetting: function () {
+    app.playClickSound();
+    // console.log("设置");
+    login.setData({
+      pauseCanvas: true,
+      showSetting: true,
+    })
+  },
+  //关闭设置
+  closeSetting: function () {
+    app.playClickSound();
+    login.setData({
+      pauseCanvas: false,
+      showSetting: false,
+    })
+    if (chess_C != null) {
+      chess_C.draw(false, 0);
+    }
+  },
+
+  //服务号
+  clickPublic: function () {
+    app.playClickSound();
+    // console.log("公众服务号")
+    login.setData({
+      isPublic: true,
+    })
+  },
+  //我知道了
+  clickIKnow: function () {
+    // console.log("我知道了")
+    app.playClickSound();
+    login.setData({
+      isPublic: false,
+    })
+  },
+
+  // music声音
+  clickMusic: function () {
+    if (app.globalData.musicOn) {
+      app.globalData.musicOn = false;
+    } else {
+      app.globalData.musicOn = true;
+    }    
+    app.globalData.baseInfo.musicByte = app.globalData.musicOn;
+    app.playClickSound();
+    login.setData({
+      isMusicOn: app.globalData.musicOn,
+    })
+  },
+
+  // 颜色辨识度
+  clickNum: function () {
+    if (app.globalData.colorWeak) {
+      app.globalData.colorWeak = false;
+    } else {
+      app.globalData.colorWeak = true;
+    }
+    app.globalData.otherInfo.colorWeak = app.globalData.colorWeak;
+    app.globalData.sessCheckMax = 0;
+    app.setUserData(app.globalData.openIdKey, consts.TYPE_OTHER, JSON.stringify(app.globalData.otherInfo).toString());
+    app.playClickSound();
+    login.setData({
+      isNumOn: app.globalData.colorWeak,
+    })
+  },
+
+
+  //更多好玩
+  clickMore: function () {
+    app.playClickSound();
+    // console.log("更多好玩")
+    //等于1的时候默认是直接跳转到合集的,不调转到更多游戏界面
+    if (app.globalData.gameCollections.showType == 1) {
+      wx.navigateToMiniProgram({
+        appId: app.globalData.gameCollections.games[2].appid,
+        envVersion: 'trial',
+        success(res) {
+          // 打开成功
+          utilLog("成功分享");
+        }
+      })
+    } else {
+      var str = "0_0_0";
+      if (!app.globalData.haventPlayLvs) {
+        str = (app.globalData.levelType == 0 ? '普通:' : '特形:') + (app.globalData.biglevel + 1) + "_" + (app.globalData.levelId + 1) + "关";
+      }
+      app.tdsdk.event({
+        id: 'moregame_befor_level',
+        label: "点击更多好玩",
+        params: {
+          moregame_befor_level: str
+        }
+
+      });
+      wx.navigateTo({
+        url: '../moregame/moregame',
+      })
+    }
+  },
+
+  //提示界面点击取消
+  clickCancle: function () {
+    app.playClickSound();
+    login.setData({
+      showDialog: false,
+      pauseCanvas: false,
+    })
+  },
+  //提示界面点击分享
+  clickYes: function () {
+    app.playClickSound();
+    utilLog("点击分享");
+    login.setData({
+      showDialog: false,
+      pauseCanvas: false,
+    })
+    if (chess_C != null) {
+      chess_C.draw(false, 0);
+    }
+  },
+
+
+  //推送绑定相关
+  formSubmit: function (ops) {
+    var id = ops.detail.formId;//表单id
+    // console.log("推送", id);
+    app.saveFormId(id);
+
+  },
+  //分享
+  onShareAppMessage(ops) {
+    utilLog("分享");
+    var that = this;
+    var id;
+    var shareTp = 0;
+    if (typeof (ops.target) == 'undefined') {// (ops.from == 'menu') 
+      id = 0;
+      shareTp = -1;
+    } else {
+      id = ops.target.dataset.id;
+    }
+    var tips = app.globalData.gameConfig.challengeTitle;
+    var random = Math.floor(Math.random() * tips.length);
+    var imgId = (Math.floor(Math.random() * 34) + 1);
+    var title = tips[random];
+    if (id == 7) {
+      imgId = "muqj";
+      title = "妈妈母亲节快乐，今天我陪你一起玩！";
+    }
+    return {
+      title: title,
+      path: '/pages/loading/loading?openId=' + app.globalData.openId + '&gameId=' + consts.GAMEID + '&imgId=' + imgId,
+      imageUrl: './../../Resources/share/' + imgId + '.jpg',
+
+      success(res) {
+
+        if (util.StartWith(id, "buqian")) {
+          app.tdsdk.event({
+            id: 'home_buqianshare',
+            label: '主界面补签分享',
+          });
+          id = id.replace("buqian_", "");
+          if (!wx.showShareMenu) {//如果当前用户的基础库太低则无法正常拿到群分享id,就直接给一个成功的逻辑
+            login.getGroupId(id, "12345");
+            return;
+          }
+
+          if (app.isPerson(res.shareTickets)) {
+            app.showPersonLimitToast();
+            return;
+          }
+          //延迟分享时不解锁问题
+          var TimerLoading = setTimeout(function () {
+            wx.showLoading({
+              title: 'loading',
+            })
+          }, 500);
+          var istimeOut = false;
+          var TimerShare = setTimeout(function () {
+            login.getGroupId(id, "12345");
+            istimeOut = true;
+            clearTimeout(TimerShare);
+            clearTimeout(TimerLoading);
+            wx.hideLoading();
+          }, 2000);
+
+
+          app.getShareInfo(res.shareTickets[0], function (res) {
+
+            login.requestGroupId(id, res, TimerShare, TimerLoading, istimeOut);
+          });
+        } else if (id == 7) {//母亲节的皮肤
+          app.tdsdk.event({
+            id: 'home_holidayshare',
+            label: '主界面节日活动分享',
+          });
+          app.addProp("skin4", 1);
+          console.log("母亲节的皮肤", app.globalData.otherInfo);
+          if (login.data.skin[3].state < 2) {
+            login.data.skin[3].state = 2;
+          }
+          // if (login.data.skin[1][0].state<2){//母情结的皮肤
+          //   login.data.skin[1][0].state = 2;
+          // }
+          wx.showToast({
+            title: '获取母亲节皮肤',
+          })
+          login.setData({
+            skin: login.data.skin,
+          });
+          login.closeHoliday();
+        } else {
+          app.tdsdk.event({
+            id: 'home_pageshare',
+            label: '主界面普通分享',
+          });
+        }
+      },
+      fail(res) {
+        console.log("主界面onShareAppMessage失败");
+      }
+    }
+  },
+
+  requestGroupId: function (buqianId, res, TimerShare, TimerLoading, istimeOut) {
+    app.requestGroupId(res, function (groupId) {
+      if (TimerShare != null) {
+        clearTimeout(TimerShare);
+      }
+      if (TimerLoading != null) {
+        clearTimeout(TimerLoading);
+      }
+      wx.hideLoading();
+      if (istimeOut) {
+        return;
+      }
+      login.getGroupId(buqianId, groupId);
+    });
+  },
+
+  getGroupId: function (buqianId, groupId) {
+    console.log("getGroupId " + groupId);
+    if (app.shareBuqianSuccess(groupId)) {
+      // 补签成功
+      app.addSignin(buqianId, app.globalData.date);
+      this.data.signin.list[buqianId - 1].state = 1;
+      // console.log("day " + app.globalData.day);
+      if (app.globalData.day == 7) {
+        this.data.signin.list[6].state = app.getLoginState(7, 7);
+        this.data.signin.canGetReward = this.data.signin.list[6].state == 0;
+        // console.log("state " + this.data.signin.list[6].state);
+      }
+      var item = this.data.signin.list[buqianId - 1];
+      this.setData({
+        signin: this.data.signin
+      });
+      // console.log(this.data.signin);
+      this.getReward(item);
+      if (!app.isIllegalGroupId(groupId)) {
+        app.addBuqianGroup(groupId);
+        app.globalData.sessCheckMax = 0;
+        app.setUserData(app.globalData.openIdKey, consts.TYPE_BASE, JSON.stringify(app.globalData.baseInfo).toString());
+      }
+    }
+    else {
+      app.showShareLimitToast();
+    }
+  },
+
+  // 点击多彩关卡
+  clickColorfulLevel: function () {
+    wx.navigateTo({
+      url: '../colorfullevel/colorfullevel',
+    })
+  }
+})
+
+

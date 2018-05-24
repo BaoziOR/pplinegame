@@ -1,0 +1,65 @@
+<view class='containerbgs'>
+  <!-- <view class='holiday'>
+    <image class='holidayImg' src='./../../Resources/common/mqj.png'></image>
+    <view class='holidayClose' hover-class='button-click' bindtap='closeHoliday'>
+      <image class='holidayCloseImg' src='./../../Resources/common/cha.png'></image>
+    </view>
+    <button class='shareBtn' hover-class='button-click'  data-id='7' open-type='share'>分享给妈妈</button>
+  </view> -->
+  <view class='flower1' style='animation: flowermove1 30s linear infinite'> </view>
+  <view class='flower4' style='animation-delay:0.5s;animation: flowermove1 34s linear infinite;'> </view>
+
+  <view class='flower3' style='animation-delay:1s;animation: flowermove3 18s linear infinite;'> </view>
+  <view class='flower5' style='animation-delay:1.5s;animation: flowermove3 15s linear infinite;'> </view>
+
+  <view class='flower6' style='animation-delay:2.5s; animation: flowermove2 25s linear infinite;'> </view>
+  <view class='flower2' style='animation-delay:3s; animation: flowermove2 23s linear infinite;'> </view>
+
+  <view class='flower1' style='animation-delay:4s;animation: flowermove1 20s linear infinite'> </view>
+  <view class='flower4' style='animation-delay:4.5s;animation: flowermove1 24s linear infinite;'> </view>
+
+  <view class='flower3' style='animation-delay:6s;animation: flowermove3 18s linear infinite;'> </view>
+  <view class='flower5' style='animation-delay:6.5s;animation: flowermove3 15s linear infinite;'> </view>
+
+
+  <view style=' position:fixed;top:0rpx;width:750rpx;height:100%;display: flex; flex-direction: column;justify-content: center;align-content: center;align-items: center; animation: comeOut 0.4s ease-out 1;'>
+    <!--标题  -->
+    <view style='width: 629rpx;height: 79rpx;border-radius: 10rpx;justify-content: center;display:flex;background-color:#4853a0;'>
+      <image style='width: 40rpx;height:75rpx;transform: rotate(180deg);' src='./../ppline/img/x.png'></image>
+      <view style='background-color:#5c68bf;width:411rpx;height:110rpx;color:white;display: flex;align-items:center;justify-content:center;font-size:50rpx;font-weight:bolder; margin-top:-30rpx;text-shadow:0 6rpx #5345a5;border-radius: 10rpx;'> 新老用户大礼包
+      </view>
+      <image style='width: 40rpx;height:75rpx;' src='./../ppline/img/x.png'></image>
+    </view>
+
+    <!--中间框体  -->
+    <view style='width:610rpx;height:7rpx;background-color:#eed2bd;'></view>
+    <view class='award'>
+      <view class='awardTxt'>
+        <view style='margin-top:50rpx;padding-left:30rpx;margin-right:20rpx;'>
+          <text style='margin-left:20rpx;'>  亲爱的广大线友们,连连线将迎来</text>
+          <text style='color:#ff7263;'>大更新</text> !
+        </view>
+        <view style='margin-top:30rpx;margin-left:20rpx;margin-right:20rpx;'>
+          <text style='margin-top:30rpx;padding-left:30rpx;'>  借此,制作组为真诚感谢"老线友们"的鼎力支持,特意准备了</text>
+          <text style='color:#ff7263;'>"老玩家大礼包"</text>
+        </view>
+      </view>
+      <view class='awardItems'>
+        <text>获得奖励</text>
+        <view class='awardList'>
+          <block wx:for="{{bonusAward}}" wx:key="key">
+            <view class='itemABg'>
+              <view class='itemA'>
+                <image class='itemIcon' src='{{bonusAwardUrl[item.awardtype[0]-1]}}'></image>
+                X{{item.awardnum}}
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class='awardGet' bindtap='closeBonus'>领取</view>
+
+  </view>
+</view>

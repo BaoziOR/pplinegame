@@ -1,0 +1,159 @@
+<view class='containers'>
+  <!--拿到用户的数据  -->
+  <!-- <open-data type="userAvatarUrl"></open-data>
+  <open-data type="userNickName" lang="zh_CN"></open-data>  -->
+
+  <!--背景动画view-->
+  <view class='bgAnim'>
+    <view class='block1' style=' margin-left: 90rpx;  animation: circle-action 80s linear infinite;   '>
+      <view class='block3'>
+      </view>
+    </view>
+    <view class='block2' style='margin-left: 60rpx;margin-top: 190rpx;animation: circle-action1 50s linear infinite; '>
+    </view>
+
+    <view class='block2' style=' width:20rpx;height:20rpx;margin-left: 160rpx;margin-top: 10rpx;animation: circle-action1 50s linear infinite; '>
+    </view>
+
+    <view class='block1' style=' margin-left: 200rpx;margin-top: 100rpx;animation: circle-action1 60s linear infinite; '>
+      <view class='block3'>
+      </view>
+    </view>
+  </view>
+  <!-- <view style='position:absolute;top= 0;left:0;width:550rpx;height:100rpx;' >{{openId}}</view> -->
+  <!-- <view style='position:absolute;top= 0;left:0;width:100rpx;height:100rpx;background-color:red;' bindtap='resetGameData'>游戏进度清空</view>         -->
+
+  <view class="top">
+    <!--客服  -->
+     <button class='kefu' plain='true' open-type="contact" style='padding:none;border: none;'>
+      <view style=' width: 100rpx;height: 40rpx; color: #dea677;font-size:30rpx;display: flex;align-items: center; '>
+        <text>客服</text>
+        <image src='./img/kefu.png' style='width:40rpx;height:39rpx;'></image>
+      </view>
+    </button> 
+    <!--界面标题-->
+    <image class="titlebg" src='./img/logo.png'></image>
+    <!--画线  -->
+    <view class='lineline'>
+      <block wx:if="{{!pauseCanvas}}">
+        <canvas canvas-id='canvas' class='canvas' disable-scroll='true' bindtouchstart='touchmove' bindtouchend='touchmove' bindtouchmove='touchmove'>
+        </canvas>
+        <canvas class='canvasCircle' canvas-id='circleCanvas' disable-scroll='true' bindtouchstart='touchmove' bindtouchend='touchmove' bindtouchmove='touchmove'></canvas>
+      </block>
+    </view>
+  </view>
+
+  <view class='mid'>
+    <!--当前第几关  -->
+    <view class='level'>
+      <text>完成 </text>
+      <text class='lvTxt'> {{levelId}} </text>
+      <text> 关</text>
+    </view>
+    <!--开始按钮 ,体力  -->
+    <form bindsubmit='formSubmit' report-submit='true'>
+      <button form-type='submit' class='btnbg' hover-class='button-click' style='z-index:10;border:none;' plain='true' bindtap='clickStart'>
+        <view class="{{openDoll ? 'btn-long':'btn-normal'}}">
+          <text class='starttxtShow'>开始游戏</text>
+        </view>
+      </button>
+    </form>
+
+    <view class="btn-special-view">
+      <form bindsubmit='formSubmit' report-submit='true'>
+        <button form-type='submit' class='btnbg' hover-class='button-click' style='z-index:10;border:none;' plain='true' bindtap='clickSpecialStart'>
+          <view class="{{openDoll ? 'btnSpecial-short': 'btnSpecial-normal'}}">
+            <text class='starttxtShow'>特形关卡</text>
+            <block wx:if="{{!isSpecialOpen}}">
+              <image class="{{openDoll ? 'suo-short' : 'suo-nomral'}}" src="./../../Resources/common/suo.png"></image>
+            </block>
+            <block wx:elif='{{isNewOpen}}'>
+              <view class="{{openDoll ? 'point-short' : 'point-normal'}}" />
+            </block>
+          </view>
+        </button>
+      </form>
+      <!-- <view class='mother' hover-class='button-click' bindtap='clickColorLv'>
+        <image class='mothericon' src='./img/2.png'></image>
+      </view> -->
+      <view class='moregame' style='visibility:{{colletcion.showType>0?"unhidden":"hidden"}};' hover-class='button-click' bindtap='clickMore'>
+        <image class='moreicon' src='{{colletcion.icon}}'></image>
+      </view>
+
+      <view class='music' style='visibility:{{getbonus?"unhidden":"hidden"}};' hover-class='button-click' bindtap='clickBonus'>      
+        <image class='musicIcon' src='./../ppline/img/box1.png'></image>      
+      </view> 
+    </view>
+
+    <!--分享与公众号 -->
+    <view class="activity-view">
+      <view class='activity-child'>
+      <!--设置  -->
+        <image class='setting' bindtap='clickSetting' hover-class='button-click' src='./img/shezhi.png'></image>
+<!--分享  -->
+        <button open-type='share' plain='true' hover-class='button-click' style='border:none;margin:0;padding:0;width:90rpx;display:flex;border-radius: 0;'>
+          <image src='./img/share.png' style='width:90rpx;height:96rpx;'></image>
+        </button>
+        <view class='setting' bindtap='clickSkinBtn' hover-class='button-click'>
+          <image class='setting' src='./img/pifi.png' />
+          <!--小红点-->
+          <!-- <view class='redTip'>
+            <view class='redTipRed'> </view>
+          </view> -->
+        </view>
+<!--签到  -->
+        <block wx:if="{{signin}}">
+          <view class='setting' bindtap='onOpenSignIn' hover-class='button-click'>
+            <image class='setting' src='./img/qiandao.png' />
+            <!--小红点-->
+            <view wx:if="{{openSigninTip}}" class='redTip'>
+              <view class='redTipRed'> </view>
+            </view>
+          </view>
+        </block>
+      </view>
+      <view class='publicbtn' hover-class='button-click' bindtap='clickPublic'>
+        <image class='publicicon' src='./img/public.png'></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- <view class='ad'>
+    <ad unit-id="adunit-0c69259cae16a415"></ad>
+  </view> -->
+</view>
+
+<block wx:if="{{showDialog}}">
+  <include src='./../dialog/dialog.wxml' />
+</block>
+
+<!--节假日窗口  -->
+ <block wx:if="{{showBonus}}">
+  <include src='./../dialog/holiday.wxml' />
+</block> 
+
+<!--皮肤窗口  -->
+<block wx:if="{{showSkin}}"> 
+  <include src='./../skin/skin.wxml' />
+</block>
+<!--设置窗口  -->
+<block wx:if="{{showSetting}}">
+  <include src='./../dialog/setting.wxml' />
+</block>
+
+<!-- 是否打开公众号 -->
+<block wx:if="{{isPublic}}">
+  <include src='./../dialog/public.wxml' />
+</block>
+
+<!-- 是否打开更新公告 -->
+<import src='../notice/notice.wxml' />
+<block wx:if="{{notice}}">
+  <template is="notice" data="{{...notice,onClose:'onCloseNotice'}}" />
+</block>
+
+<!-- 是否打开签到面板 -->
+<import src='../signin/signin.wxml'/>
+<block wx:if="{{signin && openSignin}}"> 
+  <template is="signin" data="{{...signin}}"/>
+</block> 

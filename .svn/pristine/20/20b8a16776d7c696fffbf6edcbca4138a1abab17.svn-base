@@ -1,0 +1,51 @@
+{
+	"description": "项目配置文件。",
+	"setting": {
+		"urlCheck": true,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"libVersion": "1.9.98",
+	"appid": "wx26f87a3ccbcec389",
+	"projectname": "%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%B8%E6%88%8F%E9%9B%86%E5%90%88",
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"currentL": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": [
+				{
+					"id": 0,
+					"name": "shareModel",
+					"pathName": "pages/loading/loading",
+					"query": "openId=obtdn5JBRSJ3Ifdj3bhxrJpuWzA",
+					"scene": "1007"
+				},
+				{
+					"id": 1,
+					"name": "shareModel",
+					"pathName": "pages/loading/loading",
+					"query": "openId=obtdn5JGZDYFcV0EHyetskuvhsU8",
+					"scene": "1007"
+				}
+			]
+		}
+	}
+}

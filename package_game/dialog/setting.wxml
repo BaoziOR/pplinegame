@@ -1,0 +1,31 @@
+<view class='containerbg' style='  background: rgba(1, 1, 1, 0.5);'>
+  <view class='middleSet'>
+    <!--title  -->
+    <view class='titleSet'>
+      <text>设置</text>
+      <view class='close' catchtap='closeSetting' hover-class='button-click'>
+        <image src='./../../Resources/common/cha.png'></image>
+      </view>
+    </view>
+
+    <view class='midSet'>
+      <view class='setBtn' style='margin-top:-45rpx;' hover-class='button-click' bindtap='clickMusic'>
+        <image style='margin-left:20rpx;'  src='./../../Resources/common/mute_{{isMusicOn}}.png'> </image>  
+        <text style='margin-left:25rpx;'>声音 : {{isMusicOn?"开":"关"}} </text>
+      </view>
+      
+      <!-- <view class='setBtn' style='margin-top:-45rpx;' hover-class='button-click' bindtap='clickSkinBtn'>
+        <image style='margin-left:20rpx;' src='./../index/img/pifu.png'> </image>
+      <text style='color: #ba8260;margin-top:-6rpx;font-size: 30rpx;margin-left:50rpx;font-weight: bolder;'>皮肤</text>
+      </view>       -->
+
+      <view class='numBtn' style='margin-top:-45rpx;' hover-class='button-click' bindtap='clickNum'>
+        <image style='margin-left:20rpx;' src='./../index/img/num_{{isNumOn}}.png'/>
+        <text style='margin-left:5rpx;white-space:nowrap;'>数字模式:{{isNumOn?"开":"关"}} </text>
+      </view>
+    </view>
+
+
+
+  </view>
+</view>

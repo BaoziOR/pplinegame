@@ -1,0 +1,23 @@
+<template name="notice">
+  <view class="notice-blackbg"></view>
+  <view class="notice-container">
+    <view class="notice-titlebg"></view>
+    <text class="notice-titletxt">更新公告</text>
+    <image class="notice-titlelogo" src="../notice/img/logo.png"></image>
+    <view class="notice-decorate1" style='position:absolute;left:50rpx;top:50rpx;'>
+      <view class="notice-decorate2"></view>
+    </view>
+    <view class="notice-decorate1" style='position:absolute;left:482rpx;top:16rpx;'>
+      <view class="notice-decorate2"></view>
+    </view>
+    <scroll-view scroll-y class="notice-scroll">
+      <block wx:for="{{contents}}">
+        <block wx:if="{{index != 0}}">
+          <text>\n\n</text>
+        </block>
+        <text class="notice-content">{{item}}</text>
+      </block>
+    </scroll-view>
+    <button class="notice-confirm" hover-class='button-click' bindtap='{{onClose}}'>知道了</button>
+  </view>
+</template>

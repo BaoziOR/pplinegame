@@ -1,0 +1,11 @@
+<view class='containers'>
+<!--拿到用户的数据  -->
+<view style='opacity:0.01'>
+  <open-data type="userAvatarUrl"></open-data>
+  <open-data type="userNickName" lang="zh_CN"></open-data> 
+</view>
+ <loading> loading...</loading> 
+  <!-- <view class='ad'>
+    <ad unit-id="adunit-0c69259cae16a415"></ad>
+  </view>  -->
+</view>

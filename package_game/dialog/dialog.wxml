@@ -1,0 +1,32 @@
+<!-- <template name='dialog'> -->
+<view class='containerbg' style='  background: rgba(1, 1, 1, {{alpha}});'>
+  <!-- //中间层 -->
+  <view class='mid2'>
+    <view class='content'>
+      <image class='aixin' src='{{iconProp}}'></image>
+      <text style='align-self:center;'>{{prop}}不足</text>
+    </view>
+    <block wx:if="{{leftProp<maxProp}}">
+      <view class='content'>分享获得{{prop}}</view>
+    </block>
+    <block wx:else>
+      <view class='content'>今日分享可获取{{prop}}已达上限</view>
+    </block>
+    <view class='contentTip'>(获得上限{{leftProp}}/{{maxProp}})</view>
+
+    <view class='btns'>
+      <block wx:if="{{leftProp<maxProp}}">
+        <view class='no' hover-class='button-click' catchtap='clickCancle'>不了</view>
+        <view class='yesshadow'>
+          <button class='yes' hover-class='button-click' data-id='{{dialogId}}' catchtap='clickYes' open-type='{{shareOrNot}}' >分享</button>
+        </view>
+      </block>
+      <block wx:else>
+        <view class='yesshadow'>
+          <button class='yes' hover-class='button-click' data-id='{{dialogId}}' catchtap='clickYes'>确定</button>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>
+<!-- </template> -->

@@ -1,0 +1,213 @@
+.signin-containerbg{
+  width: 100%;
+  height: 100%;
+  background: rgba(1, 1, 1, 0.7);
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.signin-container{
+  width:  619rpx;
+  height: 736rpx;
+  background: #fdfae9;
+  position: absolute;
+  left: 65.5rpx;
+  top: 138rpx;
+  border-radius: 10rpx;
+  /* animation: scale-animation 0.3s ease-in-out 0ms 1; */
+}
+
+@keyframes scale-animation{
+  0%{transform: scale(0);}
+  100%{transform: scale(1);}
+} 
+
+.signin-titlebg{
+  width: 619rpx;
+  height: 82rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #704cd9;
+  border-top-left-radius: 10rpx;
+  border-top-right-radius: 10rpx;
+}
+
+.signin-title{
+  width: 108rpx;
+  height: 4rpx;
+  position: absolute;
+  left: 140rpx;
+  top: -42rpx;
+  background-color: #8e66ff;
+  border-radius: 10rpx;
+  border-top-width: 60rpx;
+  border-bottom-width: 60rpx;
+  border-left-width: 110rpx;
+  border-right-width: 110rpx;
+  border-style: solid;
+  border-color: transparent #855ef4;
+}
+
+.signin-titletxt{
+  width: 619rpx;
+  height: 120rpx;
+  /* background: red; */
+  position: absolute;
+  left: 0;
+  top: -40rpx;
+  text-align: center;
+  line-height: 114rpx;
+  font-size: 46rpx;
+  font-weight: bold;
+  color: white;
+}
+
+.signin-decorate1{
+  width: 30rpx;
+  height: 30rpx;
+  position: absolute;
+  background: #f7de66;
+  border-radius: 10rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signin-decorate2{
+  width: 10rpx;
+  height: 10rpx;
+}
+
+.signin-decorate3{
+  width: 30rpx;
+  height: 20rpx;
+  border-radius: 7rpx;
+  position: absolute;
+}
+
+.signin-itemcontainer{
+  width: 505rpx;
+  height: 619rpx;
+  position: absolute;
+  left: 57rpx;
+  top: 82rpx;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  /* background: red;  */
+}
+
+.signin-item{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+
+.signin-item-normal{
+  width: 146rpx;
+  height: 156rpx;
+  border-radius: 10rpx;
+}
+
+.signin-item-day7{
+  width: 505rpx;
+  height: 163rpx;
+  border-radius: 10rpx;
+}
+
+.signin-item-title{
+  font-size: 25rpx;
+  font-weight: bold;
+}
+
+.signin-reward-icon{
+ margin-top: 15rpx;
+}
+
+.signin-reward-count-view{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signin-reward-count{
+  font-size: 25rpx;
+  font-weight: bold;
+}
+
+.signin-skin-view{
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10rpx;
+}
+
+.signin-fragment-icon{
+  width: 43rpx;
+  height: 52rpx;
+}
+
+.signin-gou-icon{
+  width: 44rpx;
+  height: 44rpx;
+  position: absolute;
+  left: 51rpx;
+  bottom: -22rpx;
+}
+
+.signin-buqian{
+  width: 121rpx;
+  height: 42rpx;
+  border-radius: 10rpx;
+  background: #ff7979;
+  text-align: center;
+  line-height: 42rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: white;
+  position: absolute;
+  left: 12.5rpx;
+  bottom: -21rpx;
+  box-shadow: 0 5rpx #ca4141;
+}
+
+.signin-get{
+  width: 338rpx;
+  height: 98rpx;
+  position: absolute;
+  left: 140.5rpx;
+  bottom: -66rpx;
+  background-color: #ff6868;
+  border-radius: 10rpx;
+  box-shadow: 0 10rpx #ca4141;
+  color: white;
+  font-size: 34rpx;
+  font-weight: bold;
+  text-align: center;
+  line-height: 98rpx;
+}
+
+.signin-close{
+  width: 50rpx;
+  height: 50rpx;
+  position: absolute;
+  right: 5rpx;
+  top: 10rpx;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.signin-close-icon{
+  width: 34rpx;
+  height: 34rpx;
+}
+
+
+

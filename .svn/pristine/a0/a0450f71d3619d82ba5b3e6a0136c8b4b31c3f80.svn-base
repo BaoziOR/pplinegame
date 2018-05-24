@@ -1,0 +1,8 @@
+<cover-view class='containerPublic' style='  background: rgba(1, 1, 1, {{alpha}});'>
+  <cover-view class="closebtn" bindtap='clickIKnow'></cover-view>
+  <cover-image class='midPublic' src='./img/publicBig.png'></cover-image>
+  <cover-image class='hand' src='./img/shouzhi.png'></cover-image>
+  <!-- <cover-view class="know-bg" bindtap='clickIKnow' hover-class='button-click'>
+    <cover-view class='know'>知道了</cover-view>
+  </cover-view> -->
+</cover-view>

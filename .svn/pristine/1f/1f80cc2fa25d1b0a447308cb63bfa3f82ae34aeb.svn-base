@@ -1,0 +1,836 @@
+/* gameover 弹出框   */
+
+.gamebg {
+  position: fixed;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+
+.lightCircle {
+  width: 1000rpx;
+  height: 1000rpx;
+  margin-bottom: 250rpx;
+  animation: light 30s linear infinite;
+}
+
+@keyframes light {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes comeOut {
+  0% {
+    transform: scale(0.3, 0.3);
+  }
+
+  60% {
+    transform: scale(1.1, 1.1);
+  }
+
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+.title {
+  width: 629rpx;
+  height: 164rpx;
+  align-items: flex-end;
+}
+
+.titlebg {
+  width: 629rpx;
+  height: 110rpx;
+  margin-top: 55rpx;
+  border-radius: 10rpx;
+}
+
+.titlebgXL {
+  width: 50rpx;
+  height: 112rpx;
+  transform: rotate(180deg);
+  margin-left: 55rpx;
+}
+
+.titlebgXR {
+  width: 50rpx;
+  height: 112rpx;
+  margin-left: 416rpx;
+}
+
+.titleTxtbg {
+  width: 416rpx;
+  height: 164rpx;
+  margin-top: -164rpx;
+  margin-left: 105rpx;
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.lvName {
+  font-size: 22rpx;
+  font-weight: bold;
+}
+
+.winTitle {
+  color: white;
+  font-size: 53rpx;
+  font-weight: bolder;
+}
+
+.levelTitle {
+  font-size: 31rpx;
+  margin-top: 5rpx;
+  font-weight: bold;
+}
+
+/*中间框体  */
+
+.mid {
+  width: 610rpx;
+  height: 550rpx;
+  background-color: #fefae8;
+  border-bottom-left-radius: 12rpx;
+  border-bottom-right-radius: 12rpx;
+  box-shadow: -2rpx 10rpx #48453a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.starsAnim {
+  position: absolute;
+  width: 610rpx;
+}
+
+.stars1 {
+  width: 38rpx;
+  height: 39rpx;
+  animation: starAnimation 4s both infinite;
+  transform-origin: 50% 50%;
+}
+
+.stars2 {
+  width: 33rpx;
+  height: 34rpx;
+  transform-origin: 50% 50%;
+  animation: starAnimation 4s both infinite;
+}
+
+.stars3 {
+  width: 33rpx;
+  height: 34rpx;
+  margin-bottom: -7rpx;
+  margin-left: 7rpx;
+  margin-right: 7rpx;
+  transform-origin: 50% 50%;
+  /* animation: starAnimation 4s both infinite; */
+}
+
+@keyframes starAnimation {
+  0% {
+    transform: scale(0.6, 0.6);
+  }
+
+  100% {
+    transform: scale(1.1, 1.1);
+  }
+}
+
+.timeTip {
+  display: flex;
+}
+
+.useTime {
+  width: 111rpx;
+  height: 46rpx;
+  background-color: #cab795;
+  font-size: 27rpx;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10rpx;
+}
+
+.newRecordTime {
+  width: 160rpx;
+  height: 46rpx;
+  background-color: #f55;
+  font-weight: bold;
+  font-size: 27rpx;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10rpx;
+  /* margin-left: 20rpx; */
+}
+
+.openNew {
+  width: 166rpx;
+  height: 54rpx;
+  font-weight: bolder;
+  font-size: 34rpx;
+  color: #a67438;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10rpx;
+  /* margin-left: 20rpx; */
+}
+
+/*时间  */
+
+.useCount {
+  /* width: 610rpx; */
+  height: 120rpx;
+  font-size: 120rpx;
+  color: #8a4520;
+  font-weight: bolder;
+  /* margin-top: 20rpx; */
+}
+
+.secondCnt {
+  margin-left: 50rpx;
+}
+
+.second {
+  font-weight: normal;
+  font-size: 50rpx;
+  margin-left: 2rpx;
+}
+
+/*超赶多少好友  */
+
+.outride {
+  color: #8a4520;
+  /* height:45rpx; */
+  font-size: 26rpx;
+  /* background-color: blue; */
+  margin-top: 85rpx;
+  font-weight: bold;
+}
+
+.outrideBig {
+  color: #8a4520;
+  height: 45rpx;
+  font-size: 26rpx;
+  margin-top: 65rpx;
+  font-weight: bold;
+  /* background-color: blue; */
+  transform: scale(1.15, 1.15);
+  /* animation: breath 4s ease-in-out infinite; */
+}
+
+/* 
+@keyframes breath{  
+  0%{  transform: scale(0.95, 0.95);}
+  50%{ transform: scale(1.3, 1.3);}
+  50%{ transform: scale(1.2, 1.2);}
+} */
+
+/*好友数据  */
+
+.friendbg {
+  width: 550rpx;
+  height: 194rpx;
+  background-color: #fff5d9;
+  margin-top: 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.friendInfo {
+  width: 80rpx;
+  height: 194rpx;
+  margin-left: 40rpx;
+  margin-right: 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 24rpx;
+  color: #b0937c;
+  font-weight: bolder;
+}
+
+.rank {
+  color: #b0937c;
+}
+
+.rankSelect {
+  font-size: 26rpx;
+  color: #ffc24d;
+}
+
+.friendname {
+  font-weight: normal;
+  margin-top: 2rpx;
+  width: 80rpx;
+  height: 35rpx;
+  /* background-color: red;  */
+  text-align: center;
+  overflow: scroll;
+}
+
+.friendScore {
+  font-size: 24rpx;
+  display: flex;
+  margin-top: 8rpx;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.scoreUnit {
+  font-size: 22rpx;
+  /* font-weight: bolder; */
+  margin-bottom: 5rpx;
+  align-self: flex-end;
+}
+
+.friendIcon {
+  width: 65rpx;
+  height: 65rpx;
+  margin-top: 5rpx;
+  border-radius: 10rpx;
+}
+
+/*挑战好友,下一关  */
+
+.btnBg {
+  width: 610rpx;
+  height: 103rpx;
+  margin-top: 30rpx;
+  margin-bottom: 100rpx;
+  color: white;
+  display: flex;
+}
+
+.btnitem {
+  width: 295rpx;
+  height: 92rpx;
+  color: white;
+  font-size: 31rpx;
+  font-weight: bolder;
+}
+
+/*底部button按钮  */
+
+.down {
+  width: 538rpx;
+  height: 130rpx;
+  margin-top: 35rpx;
+}
+
+/*炫耀  */
+
+.shareitem {
+  width: 538rpx;
+  height: 129rpx;
+  color: white;
+  font-size: 41rpx;
+  letter-spacing: 5rpx;
+  font-weight: bolder;
+  background-color: #ce5bac;
+  box-shadow: 0 12rpx #a33683;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: -10rpx;
+}
+
+.shareAdd {
+  height: 44rpx;
+  direction: flex;
+  margin-top: -35rpx;
+  margin-bottom: 25rpx;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.next {
+  font-size: 37rpx;
+  color: white;
+  align-items: center;
+  margin-top: 17rpx;
+  margin-bottom: 55rpx;
+  text-decoration-line: underline;
+  /* 高度、颜色、虚线 *//* border-top:1px #111 dashed; 
+  border-bottom: 1px #000 solid; */
+}
+
+.bonusViewBg {
+  width: 560rpx;
+  height: 504rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: red; */
+}
+
+.busLight {
+  width: 441rpx;
+  height: 441rpx;
+  animation: light 30s linear infinite;
+}
+
+.busBox {
+  width: 211rpx;
+  height: 193rpx;
+  margin-top: -333rpx;
+  animation: boxAnim 1.2s linear;
+}
+
+.busBox1 {
+  width: 211rpx;
+  height: 193rpx;
+  margin-top: -193rpx;
+  animation: box1Anim 1.2s linear;
+}
+.awardView{
+  width: 100rpx;
+  height: 160rpx;
+  color: #8a5420;
+  font-size: 29rpx;
+  font-weight: bold;
+  margin-top: -100rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: awardAnim 1.2s linear;
+}
+.awardViewIcon{
+  width: 82rpx;
+  height: 93rpx;
+}
+
+@keyframes awardAnim {
+  0% {
+    opacity: 0;
+    transform: scale(0, 0);
+  }
+  75% {
+    opacity: 0;
+  }
+  75% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5, 1.5);
+    opacity: 1;
+  }
+}
+
+@keyframes box1Anim {
+  0% {
+    opacity: 0;
+  }
+  49% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(0.7, 1.3);
+  }
+  75% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes boxAnim {
+  0% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+
+  30% {
+    transform: scale(1.3, 0.7);
+    opacity: 1;
+  }
+
+  49% {
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.7, 1.3);
+    opacity: 0;
+  }
+
+  75% {
+    transform: scale(1, 1);
+    opacity: 0;
+  }
+}
+
+.busTxt {
+  width: 420rpx;
+  height: 84rpx;
+  font-size: 46rpx;
+  color: #8a5420;
+  font-weight: bolder;
+  margin-top: 100rpx;
+  background-color: #f4e9ce;
+  border-radius: 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.busTxtBonus {
+  color: #4ed1bf;
+}
+
+.shareAchieve {
+  width: 600rpx;
+  height: 404rpx;
+  display: flex;
+  /* align-self: center; */
+  justify-content: center;
+  /* align-items: center; */
+  margin-top: -35rpx;
+  margin-left: 30rpx;
+  /* background-color: red;  */
+}
+
+.shareAchieve2 {
+  width: 600rpx;
+  height: 404rpx;
+  display: flex;
+  justify-content: center;
+  margin-top: -35rpx;
+  margin-left: 20rpx;
+}
+
+.shareAchievebg {
+  width: 600rpx;
+  height: 404rpx;
+  display: flex;
+  /* align-self: center; */
+  justify-content: center;
+  /* align-items: center; */
+  margin-top: -35rpx;
+  margin-left: 30rpx;
+  /* background-color: red;  */
+}
+
+.img {
+  width: 484rpx;
+  height: 404rpx;
+  align-self: center;
+}
+
+.img2 {
+  width: 311rpx;
+  height: 294rpx;
+  margin-left: -398rpx;
+  position: relative;
+  display: flex;
+  align-self: center;
+  align-items: flex-end;
+}
+
+.img3 {
+  width: 150rpx;
+  height: 185rpx;
+  margin-left: -310rpx;
+  margin-top: 20rpx;
+  position: relative;
+  display: flex;
+  align-self: center;
+  align-items: flex-end;
+}
+
+.img4 {
+  width: 175rpx;
+  height: 231rpx;
+  margin-left: -320rpx;
+  margin-top: 25rpx;
+  position: relative;
+  display: flex;
+  align-self: center;
+  align-items: flex-end;
+  animation: getAward 0.7s linear 1;
+}
+
+.achieveTxt {
+  position: relative;
+  width: 550rpx;
+  height: 70rpx;
+  font-weight: bolder;
+  color: #8a5420;
+  font-size: 42rpx;
+  background-color: #f4e9ce;
+  border-radius: 35rpx;
+  margin-top: 420rpx;
+  margin-left: -350rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* align-self: center; */
+}
+
+.achieveTxt2 {
+  position: relative;
+  width: 550rpx;
+  height: 70rpx;
+  font-weight: bolder;
+  color: #8a5420;
+  font-size: 42rpx;
+  background-color: #f4e9ce;
+  border-radius: 35rpx;
+  margin-top: 420rpx;
+  margin-left: -430rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* align-self: center; */
+}
+
+.achieveTxt3 {
+  position: relative;
+  width: 550rpx;
+  height: 70rpx;
+  font-weight: bolder;
+  color: #8a5420;
+  font-size: 42rpx;
+  background-color: #f4e9ce;
+  border-radius: 35rpx;
+  margin-top: 420rpx;
+  margin-left: -350rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* align-self: center; */
+}
+
+.achieveBar {
+  margin-top: 35rpx;
+  width: 506rpx;
+  height: 34rpx;
+  border-radius: 17rpx;
+  margin-left: 40rpx;
+  color: white;
+  /* padding-left: -60rpx; */
+}
+
+.barbar {
+  height: 34rpx;
+  background-color: #7c736e;
+  border-radius: 17rpx;
+  display: flex;
+}
+
+.addBest {
+  position: absolute;
+  margin-top: -35rpx;
+  margin-left: 30rpx;
+  animation: add1 1s ease-in-out 1;
+  opacity: 0.01;
+}
+
+@keyframes add1 {
+  0% {
+    transform: scale(0.5, 0.5);
+    opacity: 0.05;
+  }
+
+  50% {
+    transform: scale(1.5, 1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.2, 1.2);
+    opacity: 0.04;
+  }
+}
+
+/*彩带  */
+
+.flower1 {
+  width: 20rpx;
+  height: 46rpx;
+  position: absolute;
+  z-index: 100;
+  background-color: #f66760;
+  top: 0;
+  right: 115rpx;
+}
+
+.flower2 {
+  width: 15rpx;
+  height: 25rpx;
+  position: absolute;
+  background-color: #ffc24d;
+  z-index: 100;
+  top: -400rpx;
+  right: 30rpx;
+}
+
+.flower3 {
+  width: 15rpx;
+  height: 25rpx;
+  position: absolute;
+  background-color: #b3a2e5;
+  z-index: 100;
+  top: -600rpx;
+  right: 60rpx;
+}
+
+.flower4 {
+  width: 20rpx;
+  height: 30rpx;
+  position: absolute;
+  background-color: #78bff6;
+  z-index: 100;
+  top: -200rpx;
+  left: 270rpx;
+}
+
+.flower5 {
+  width: 20rpx;
+  height: 30rpx;
+  position: absolute;
+  background-color: #f55;
+  z-index: 100;
+  top: -800rpx;
+  left: 60rpx;
+}
+
+.flower6 {
+  width: 20rpx;
+  height: 30rpx;
+  position: absolute;
+  background-color: #95d130;
+  z-index: 100;
+  top: -300rpx;
+  left: 30rpx;
+}
+
+@keyframes flowermove1 {
+  0% {
+    transform: rotate(20deg) translateY(-50rpx);
+  }
+
+  50% {
+    transform: rotate(10deg) translateY(700rpx);
+  }
+
+  100% {
+    transform: rotate(20deg) translateY(1500rpx);
+  }
+}
+
+@keyframes flowermove2 {
+  0% {
+    transform: rotate(10deg) translateY(-20rpx);
+  }
+
+  50% {
+    transform: rotate(5deg) translateY(600rpx);
+  }
+
+  100% {
+    transform: rotate(10deg) translateY(1240rpx);
+  }
+}
+
+@keyframes flowermove3 {
+  0% {
+    transform: rotate(-10deg) translateY(-60rpx);
+  }
+
+  50% {
+    transform: rotate(-5deg) translateY(600rpx);
+  }
+
+  100% {
+    transform: rotate(-10deg) translateY(1320rpx);
+  }
+}
+
+.colorful-view{
+  display: flex;
+  width: 610rpx;
+  height: 500rpx;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.colorful-bg-1{
+  width: 265rpx;
+  height: 265rpx;
+  border-radius: 100%;
+  background: #fbf4df;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.colorful-bg-2{
+  width: 245rpx;
+  height: 245rpx;
+  border-radius: 100%;
+  background: #f4e9ce;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.colorful-reward-icon{
+  animation: getAward 0.7s linear 1;
+}
+
+.colorful-reward-txt{
+  font-size: 37rpx;
+  font-weight: bold;
+  color: #8a5420;
+}
+
+.colorful-rewardname-bg{
+  width: 420rpx;
+  height: 70rpx;
+  border-radius: 20rpx;
+  background: #f4e9ce;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ad_img{
+  height:215rpx;
+  width:750rpx;
+  position:absolute;
+  left:0;
+  bottom:0;
+  align-items:center;
+  z-index:10;
+}

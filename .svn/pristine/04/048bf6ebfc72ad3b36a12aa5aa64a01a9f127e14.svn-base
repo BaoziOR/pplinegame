@@ -1,0 +1,5 @@
+const cinsts = '{"list":[{"day":1,"rewardId":"coin","rewardCount":30},{"day":2,"rewardId":"diamond","rewardCount":30},{"day":3,"rewardId":"coin","rewardCount":30},{"day":4,"rewardId":"coin","rewardCount":30},{"day":5,"rewardId":"coin","rewardCount":30},{"day":6,"rewardId":"coin","rewardCount":30},{"day":7,"rewardId":"fskin1","rewardCount":30}]}';
+
+module.exports = {
+  signintest: cinsts
+}

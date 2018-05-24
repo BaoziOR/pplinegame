@@ -1,0 +1,68 @@
+<view class='containers' disable-scroll='true'>
+  <view class='listup' />
+  <!--难度选择  -->
+  <scroll-view class='list' scroll-y="true">
+    <view wx:for="{{rankTop20}}" wx:for-item="item" wx:key="key">
+      <view class='listItem'>
+        <!-- 排名 -->
+        <block wx:if="{{item.id==1}}">
+          <view class='rankIconbg'>
+            <image class='rankIcon rank1' src='./img/c1.png'>
+            <text style='position:relative;margin-left:-39rpx;align-self:center;'>{{item.id}}</text>
+            </image>
+          </view>
+        </block>
+        <block wx:elif="{{item.id==2}}">
+          <view class='rankIconbg'>
+            <image class='rankIcon rank2' src='./img/c2.png'>
+              <text style='position:relative;margin-left:-39rpx;align-self:center;'>{{item.id}}</text>
+            </image>
+          </view>
+        </block>
+        <block wx:elif="{{item.id==3}}">
+          <view class='rankIconbg'>
+            <image class='rankIcon rank3' src='./img/c3.png'>
+              <text style='position:relative;margin-left:-39rpx;align-self:center;'>{{item.id}}</text>
+            </image>
+          </view>
+        </block>
+        <block wx:else>
+          <view class='itemRank rankNormal'>{{item.id}}</view>
+        </block>
+
+        <!--头像  -->
+        <view class='icon'>
+          <image class='icon' src='{{item.url}}'></image>
+        </view>
+        <!--昵称  -->
+        <text class='nickname'>{{item.nickname}}</text>
+
+        <!--分数或者关卡  -->
+        <view class='score'>
+          <text>{{item.lvs}}</text>
+          <text style='font-size:37rpx;'>关</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <!--当前玩家自己的排名  -->
+  <view class='listItem listitemBg'>
+    <view class='itemRank rankSelect'>{{curRank}}</view>
+    <!--头像  -->
+    <view class='icon'>
+      <image class='icon' src='{{url}}'></image>
+    </view>
+    <!--昵称  -->
+    <text class='nickname'>{{nickname}}</text>
+
+    <!--分数或者关卡  -->
+    <view class='score'>
+      <text>{{lvs}}</text>
+      <text style='font-size:37rpx;'>关</text>
+    </view>
+  </view>
+  <!--底部  -->
+  <view class='down'>
+    <text>查看群排名></text>
+  </view>
+</view>

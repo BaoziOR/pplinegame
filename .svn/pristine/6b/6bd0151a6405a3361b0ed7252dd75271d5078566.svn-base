@@ -1,0 +1,705 @@
+//biglevel.js
+var utilLog = require('./../../utils/util.js').log;//log
+var consts = require('./../../utils/consts.js').consts;//const数据
+var compVer = require('./../../utils/util.js').compVersion;//比较版本号
+var app = getApp();
+var levelType;//当前进入的关卡大类型_普通___高塔____蜂巢
+var that;
+
+Page({
+  data: {
+    screenWidth: 375.0,
+    screenHeight: 667.0,
+    tili: 5,
+    curpassLevel: 0,
+    allCount: 0,
+    colors: [
+      '#f27050', '#e8b80e', '#a3cc65', '#c0d06a', '#65ccbb',
+      '#66a4cb', '#9085e5', '#ba98f3', '#eb9cf0', '#f09cb2',
+      '#eaca86', '#e6d785', '#b2d470', '#89e0d2', '#60cf94',
+      '#8e9ac4', '#db9595', '#d7a580', '#cdb375', '#a9c67c',
+
+      '#ba7232',
+      '#f59b13', '#27c180', '#14a183', '#4c76c1',
+      '#83dca5', '#bc91d4', '#5e98bd', '#d54433',
+      '#f5d66f', '#27a4a5', '#b6895d', '#77442a',
+
+    ],
+    shadowColors: [
+      '#eb684a', '#d5b00a', '#97be59', '#b3c457', '#5dc0ae',
+      '#599ac3', '#897ed7', '#ab8ae4', '#d28ad7', '#e089a0',
+      '#d9b568', '#d9c971', '#9bbf54', '#68ccbc', '#44bb7c',
+      '#7e8bb8', '#d18383', '#d39466', '#c3a763', '#95b169',
+
+      '#874f1e',
+      '#d46827', '#12876e', '#0e6351', '#264e96',
+      '#57c380', '#884ea8', '#31739d', '#9b2e21',
+      '#d6b136', '#107c7d', '#985d23', '#53250d',
+    ],
+    toView: 'bar13',
+    levelProgress: [],
+    allLevels: [],
+    recLv:-1,//最近在玩
+    levelConditions: [],//关卡条件
+    levelFriendIcons: [],//好友的头像列表数据
+    messageBox: null // 提示框
+  },
+
+  onLoad: function (ops) {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
+    if (ops.levelType != null) {
+      levelType = ops.levelType;
+    } else {
+      levelType = app.globalData.levelType;
+    }
+  },
+  onShow: function () {
+    that = this;
+    //更新关卡数据  
+    {
+      var levels = that.updateLevelsData();
+      var icons = that.updateFriendIcons();
+      var lastplay = -1;
+      if (!app.globalData.baseInfo.hasOwnProperty("Lastplay")){
+        app.globalData.baseInfo.Lastplay={};
+      }
+      if (!app.globalData.baseInfo.Lastplay.hasOwnProperty(levelType)){
+        app.globalData.baseInfo.Lastplay[levelType] = -1;
+      }
+      lastplay = app.globalData.baseInfo.Lastplay[levelType];
+      that.setData({
+        recLv: lastplay,//app.globalData.baseInfo.biglevel,
+        levelConditions: app.globalData.levelOpenConfig[levelType],
+        allLevels: levels.levels,
+        levelFriendIcons: icons,
+        screenWidth: app.globalData.screenWidth,
+        screenHeight: app.globalData.screenHeight,
+      });
+      //必须等数据布局结束之后才可以跳转
+      setTimeout(
+        function () {
+          var sortId= -1;
+          var tmp = 0;
+          if (that.data.recLv != -1){
+            while ( that.data.allLevels[tmp].id != that.data.recLv) {
+              tmp++;
+            }
+          }else
+          {
+            // console.log("界面跳转", levels.jumpId );
+            while (levels.jumpId>0&&that.data.allLevels[tmp].id != levels.jumpId-1) {
+              tmp++;
+            }
+          }
+          sortId = tmp;
+          if(sortId<2){
+            sortId = 1;
+          } else if (sortId > that.data.allLevels.length - 2 ) {
+            sortId = that.data.allLevels.length - 2;
+          } 
+          sortId = sortId-1;
+          // that.data.allLevels[sortId].id;
+          var nextBar = that.data.allLevels[sortId].id;
+          //(that.data.recLv != -1 ? that.data.allLevels[sortId].id : levels.jumpId);          
+
+          that.setData({
+            toView: 'bar' + nextBar ,//levels.jumpId,
+          })
+        }, 100
+      )
+    }
+  },
+
+  onCloseMessageBox: function () {
+    this.setData({
+      messageBox: null
+    });
+  },
+
+  ////////////////////////////////更新数据//////////////////////////////////////
+  updateLevelsData: function () {
+    var allcount = 0;
+    var levels = [];
+    var changedBaseInfo = false;
+
+    var firstUnopen = 1;//遇到的第一个未解锁的大关的id
+
+    var prograss = app.globalData.baseInfo.levelProgress;
+    var foreach = "";
+    var shadow = that.data.shadowColors;
+    var _color = that.data.colors;
+    var content = app.globalData.levelContent;
+    var isSpecial = false;
+    if (levelType == consts.LEVELTYPE_TOWER) {
+      isSpecial = true;
+    }
+    var levelConditions = app.globalData.levelOpenConfig[levelType];
+    var levelShared = app.globalData.baseInfo.lvSharedCnt;
+    if (levelShared == null || (typeof (levelShared)) == 'undefined') {
+      levelShared = [];
+    }
+    if (levelShared[levelType] == null || (typeof (levelShared[levelType])) == 'undefined') {
+      levelShared[levelType] = [];
+    }
+    //test 
+    app.globalData.baseInfo.openedLvArr = [];
+    var openArr = app.globalData.baseInfo.openedLvArr;//关卡开启数据
+
+    var alwaysOpen = true;
+    var smallestUnopen = content.length-1;
+    for (var i = 0; i < content.length; i++) {
+      var bigLevel = content[i];
+      var item = new Object();
+      var config = app.globalData.levelOpenConfig[levelType][i];
+      item.id = i;
+      item.sortId = bigLevel.s;//用来排序关卡展示顺序的 
+      item.barId = 'bar' + i;
+      item.title = config.name;// "普通关卡" +abc[i];
+      if(item.title =='高级1'){
+        isSpecial = isSpecial;
+      }
+      if (isSpecial) {
+        item.size = bigLevel.c[0].levelname + "---" + bigLevel.c[bigLevel.c.length - 1].levelname;
+      } else {
+        item.size = bigLevel.levelname;
+      }
+
+      var isOpen = app.shareOKChargeOpenOrNot(i, 0, levelType);
+      if (config.openType < 3) {
+        item.isopen = isOpen[0];
+        item.openStr = config.openDescription;//  "待解锁";
+      } else {
+        var strs = config.openDescription.split('_');
+        item.openStr = !isOpen[0] ? strs[0] : strs[1];
+        item.isopen = (isOpen[0] && isOpen[1]);
+      }
+//v33版本时新增了4个大关卡,要判断是否是新用户,新用户不显示新,老用户展示新这个按钮
+      item.isNewAdd = false;
+      if (!app.globalData.baseInfo.isBigV33)//在V34中的存档读取时增加; app.globalData.baseInfo.isBigV33 = true,后续版本被替换为app.globalData.baseInfo.appVers
+      {
+        if (item.id>27&& item.id<32){
+          item.isNewAdd = true;
+        }
+      }
+      if (app.globalData.baseInfo.appVers < consts.VERSION){
+        if (item.id > 31 && item.id < 39) {
+          item.isNewAdd = true;
+        }
+      }
+
+      
+      var before = alwaysOpen;
+      // alwaysOpen = (alwaysOpen && item.isopen);
+      // if (!alwaysOpen && before) {
+      //   firstUnopen = item.sortId;
+      // }
+      alwaysOpen = item.isopen;
+      if (!alwaysOpen && before && smallestUnopen > item.sortId){
+        firstUnopen = item.sortId;
+        smallestUnopen = item.sortId;
+      }
+
+      var alllevel = app.globalData.levelCntArr[levelType][i];//计算每个类型的关卡的总数量
+      
+      if ((item.isopen || item.isPass == null || typeof (item.isPass) == 'undefined') && (app.globalData.baseInfo.levelProgress != null && (typeof (app.globalData.baseInfo.levelProgress) != 'undefined') && app.globalData.baseInfo.levelProgress[levelType] != null && typeof (app.globalData.baseInfo.levelProgress[levelType]) != 'undefined')) {
+        item.isPass = app.globalData.baseInfo.levelProgress[levelType][i] > alllevel;
+      } else {
+        item.isPass = false;
+      }
+      if (openArr == null || typeof (openArr) == 'undefined') {
+        openArr = [];
+      }
+      if (openArr[levelType] == null || typeof (openArr[levelType]) == 'undefined') {
+        openArr[levelType] = [];
+      }
+      if (openArr[levelType][i] != item.isopen) {
+        changedBaseInfo = true;
+        openArr[levelType][i] = item.isopen;
+      }
+      utilLog("大关卡开启:" + item.isopen);
+
+      if ((levelConditions[i].openType == consts.OPEN_SHARE && !item.isopen)
+        || (levelConditions[i].openType == consts.OPEN_LEVELS_SHARE && (isOpen[0] && !isOpen[1]))
+        || (levelConditions[i].openType == consts.OPEN_SHARE_LEVELS && !isOpen[0])
+      ) {
+        item.openType = 2;//出现分享的按钮和提示文本
+        // item.maxlevel = config.openCondition;
+        switch (levelConditions[i].openType) {
+          case consts.OPEN_SHARE:
+          case consts.OPEN_SHARE_LEVELS:
+            item.maxlevel = config.openCondition[0];
+            break;
+          case consts.OPEN_LEVELS_SHARE:
+            item.maxlevel = config.openCondition[2];
+        }
+        if (levelShared[levelType][i] == null || (typeof (levelShared[levelType][i])) == 'undefined') {
+          levelShared[levelType][i] = 0;
+        }
+        item.curlevel = levelShared[levelType][i];
+      } else {
+        item.openType = 1;//只出现解锁哪关
+        item.maxlevel = alllevel;
+        var lastAll = allcount;
+        if (isSpecial) {
+          allcount = alllevel;
+        } else {
+          allcount += bigLevel.levelnum;
+        }
+
+        if (prograss == null || typeof (prograss) == "undefined" ||
+          prograss[levelType] == null || typeof (prograss[levelType]) == 'undefined' ||
+          prograss[levelType][i] == null || typeof (prograss[levelType][i]) == 'undefined'
+        ) {
+          var cur = 0;// app.globalData.levelbiglittle ;
+          if (levelType == consts.LEVELTYPE_NORMAL) {
+            cur = prograss[levelType][i];
+          } else {
+            if (prograss[levelType] == null || (typeof (prograss[levelType]) == 'undefined')) {
+              prograss[levelType] = [];
+            }
+            if (prograss[levelType][i] == null || (typeof (prograss[levelType][i])) == 'undefined') {
+              prograss[levelType][i] = 0;
+            }
+            cur = prograss[levelType][i];
+          }
+
+          if (cur == null || typeof(cur)=='undefined'|| cur < allcount) {
+            if (lastAll < cur) {
+              item.curlevel = cur - lastAll;
+            }
+            else {
+              item.curlevel = 0;
+            }
+          } else {
+            item.curlevel = bigLevel.levelnum;
+          }
+          if (prograss == null) {
+            prograss = [];
+          }
+          if (prograss[levelType] == null || typeof (prograss[levelType]) == 'undefined') {
+            prograss[levelType] = [];
+          }
+          prograss[levelType][i] = item.curlevel;
+          changedBaseInfo = true;
+        } else {
+          if (item.isopen && prograss[levelType][i] == 0) {
+            prograss[levelType][i] = 1;//解锁后都是第一关
+          }
+          item.curlevel = prograss[levelType][i];//每类关卡的小关卡进度
+        }
+        item.curlevel = Math.min(item.curlevel, item.maxlevel)
+        // item.lvId = i;
+      }
+      // levels.push(item);
+      levels[item.sortId] = item;
+    }
+    app.globalData.baseInfo.openedLvArr = openArr;
+    app.globalData.baseInfo.lvSharedCnt = levelShared;
+
+    if (changedBaseInfo) {
+      changedBaseInfo = false;
+      app.globalData.baseInfo.levelProgress = prograss;
+      app.globalData.sessCheckMax = 0;
+      app.setUserData(app.globalData.openIdKey, consts.TYPE_BASE, JSON.stringify(app.globalData.baseInfo).toString());
+    }
+    that.setData({
+      shadowColors: shadow,
+      colors: _color,
+    })
+    var obj = new Object();
+    obj.levels = levels;
+    obj.jumpId = firstUnopen -1;
+    return obj;
+  },
+
+  ///更新头像数据
+  updateFriendIcons: function () {
+    var list = [];
+    if (app.globalData.friendRankList == null) {
+      app.globalData.friendRankList = [];
+    }
+    //每次排序时先把自己的分数和关卡更新下
+
+    //先过滤一遍玩过这关的好友有哪些,没有数据的不参加排名
+    var effectiveFriend = [];//现有的有效的好友数据
+    var timeKey = app.globalData.biglevel + "_" + app.globalData.levelId;
+    var timeStepKey = timeKey + "_step";
+    var dataId = 0;//values[0]consts.TYPE_BASE;values[1]consts.TYPE_WX;values[2]consts.TYPE_TIMECOST;
+    for (var i = 0; i < app.globalData.friendRankList.length; i++) {
+      var item = app.globalData.friendRankList[i];
+      if (item.key == app.globalData.openIdKey || (item.values.length < 1 || item.values[dataId].data == null)) {
+        continue;
+      } else {
+        var data = JSON.parse(item.values[dataId].data);
+        if (data == null || data.levelProgress == null || typeof (data.levelProgress) == 'undefined'
+          || typeof (data.levelProgress[levelType]) == 'undefined' || data.levelProgress[levelType] == null
+        ) {
+          continue;
+        }
+      }
+      effectiveFriend.push(item);
+    }
+
+    var allBiglevel = app.globalData.levelOpenConfig[levelType].length;
+    for (var j = 0; j < allBiglevel; j++) {
+      //只显示当前我玩过的大关卡中的好友icon
+      if (app.globalData.baseInfo.levelProgress[levelType] != null
+        && typeof (app.globalData.baseInfo.levelProgress[levelType]) != 'undefined' && app.globalData.baseInfo.levelProgress[levelType][j] >= 1) {
+
+        for (var i = 0; i < effectiveFriend.length; i++) {
+          var item = effectiveFriend[i].values;
+          var datas = JSON.parse(item[dataId].data);
+          if (datas == null || (typeof (datas)) == 'undefined') {
+            continue;
+          }
+          var levelProcess = datas.levelProgress[levelType];
+          if (list[j] == null) {
+            list[j] = [];
+          }
+          if (levelProcess[j] > 0) {
+            if (list[j].length < 5) {//最多显示5个icon
+              if (JSON.parse(item[1].data)!=null){
+                list[j].push(JSON.parse(item[1].data).avatarUrl);
+              }
+            }
+          }
+        }
+      } else {
+        list[j] = [];
+      }
+    }
+
+    return list;
+  },
+  /////////////////////////////////////////////////////////////////////////////
+
+  clickBigLevel: function (e) {
+    utilLog("大关卡选择");
+    app.globalData.biglevel = e.currentTarget.dataset.id;
+    var openCnts = app.globalData.baseInfo.openedLvArr;
+    if (typeof (openCnts) == 'undefined') {
+      openCnts = [];
+    }
+    if (typeof (openCnts[levelType]) == 'undefined') {
+      openCnts[levelType] = [];
+    }
+    var theOne = null;
+    var tmp = 0;
+    while (that.data.allLevels[tmp].id != app.globalData.biglevel) {
+      tmp++;
+    }
+    if (tmp < that.data.allLevels.length) {
+      theOne = that.data.allLevels[tmp];
+    } else {
+      utilLog("关卡分享报错", id);
+    }
+    if (!openCnts[levelType][app.globalData.biglevel]) {
+      var config = app.globalData.levelOpenConfig[levelType][app.globalData.biglevel];
+      if (config.openType == consts.OPEN_NULL) {
+        openCnts[levelType][app.globalData.biglevel] = true;
+        app.globalData.baseInfo.openedLvArr = openCnts;
+      } else {
+        // if (that.data.allLevels[app.globalData.biglevel].openType==1){
+        if (theOne.openType ==1){
+          var jumpid = config.openCondition[0];
+          if (config.openType == consts.OPEN_SHARE_LEVELS){
+            jumpid = config.openCondition[1];
+          }       
+          utilLog("点击大关卡时给提示跳转:", jumpid - 1);
+          that.setData({
+            toView: 'bar' + (jumpid),
+          });
+        }
+        wx.showToast({
+          // title: that.data.allLevels[app.globalData.biglevel].openStr,
+          title:theOne.openStr,
+          image: './../../Resources/common/suo2.png',
+        })
+        return;
+      }
+    }
+    var curent = theOne.curlevel;//that.data.allLevels[app.globalData.biglevel].curlevel;
+    var max = theOne.maxlevel;// that.data.allLevels[app.globalData.biglevel].maxlevel;
+    if (levelType == consts.LEVELTYPE_TOWER) {
+      max = app.globalData.levelContent[app.globalData.biglevel].c.length;
+      app.globalData.levelId = app.globalData.baseInfo.levelProgress[levelType][app.globalData.biglevel];
+      
+      //记录当前特殊关卡的id
+      app.globalData.sBiglevel = app.globalData.biglevel;
+      app.globalData.sLevelId = app.globalData.levelId;
+
+      var allmax = 0;
+      for (var i = 0; i < max; i++) {
+        var small = allmax;
+        var pre = allmax;
+        allmax += app.globalData.levelContent[app.globalData.biglevel].c[i].levelnum;
+        if ((i == max - 1) && (allmax <app.globalData.levelId)){
+          app.globalData.levelId = allmax;
+          app.globalData.sLevelId = app.globalData.levelId ;
+        }
+        if ((small < app.globalData.sLevelId) && (allmax >= app.globalData.sLevelId)) {
+          app.globalData.sBiglevel = i;
+          app.globalData.sLevelId = app.globalData.sLevelId - pre;
+          if (app.globalData.sLevelId > app.globalData.levelContent[app.globalData.biglevel].c[i].length) {
+            app.globalData.sLevelId = app.globalData.levelContent[app.globalData.biglevel].c[i].length;
+          }
+          break;
+        }
+      }
+    } else {
+      app.globalData.levelId = app.globalData.baseInfo.levelProgress[levelType][app.globalData.biglevel];
+      if (app.globalData.levelId > max) {
+        app.globalData.levelId = max;
+      }
+      if (app.globalData.levelId <= 0 ) {
+        app.globalData.levelId = 1;
+        app.globalData.baseInfo.levelProgress[levelType][app.globalData.biglevel] = 1;
+      }
+    }
+    app.globalData.baseInfo.levelId = app.globalData.levelId;
+    app.globalData.baseInfo.biglevel = app.globalData.biglevel;
+    app.globalData.baseInfo.Lastplay[levelType] = app.globalData.baseInfo.biglevel;
+    app.globalData.haventPlayLvs = false;
+    wx.navigateTo({
+      url: '../ppline/ppline'
+    })
+  },
+
+  //点击大关卡的分享
+  clickLevelShare: function (ops) {
+    utilLog("大关卡分享按钮");
+    if (this.data.messageBox) {
+      this.onCloseMessageBox();
+    }
+    var levelId = ops.currentTarget.dataset.id;//从0开始
+    var needCnt = app.globalData.levelOpenConfig[levelType][levelId];
+    var sharedCnts = app.globalData.baseInfo.lvSharedCnt;
+    var openCnts = app.globalData.baseInfo.openedLvArr;//关卡的开启标记数组
+    if (typeof (openCnts) == 'undefined') {
+      openCnts = [];
+    }
+    if (typeof (openCnts[levelType]) == 'undefined') {
+      openCnts[levelType] = [];
+    }
+    if (openCnts[levelType][levelId]) {
+      utilLog("关卡分享结束");
+      return;
+    }
+  },
+  //返回主页
+  clickBack: function () {
+    wx.navigateBack({
+      url: '../index/index',
+    })
+  },
+
+  //scrollview的滑动事件
+  scroll: function () {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+
+  shareOverGet: function (groupId, levelType, id){
+    if (app.shareGroupSuccess(groupId)) {
+      var lvs = that.data.allLevels;
+      if (app.shareOKChargeOpenOrNot(id, 1, levelType)) {
+        var theOne = null;
+        var tmp = 0;
+        while (lvs[tmp].id != id) {
+          tmp++;
+        }
+        if (tmp < lvs.length) {
+          theOne = lvs[tmp];
+        } else {
+          utilLog("关卡分享报错", id);
+        }
+        theOne.isopen = true;
+        theOne.isPass = false;
+        theOne.curlevel = 1;
+        if (levelType == consts.LEVELTYPE_NORMAL) {
+          theOne.maxlevel = app.globalData.levelContent[id].levelnum;
+        } else {
+          var all = 0;
+          var j = 0;
+          while (j < app.globalData.levelContent[id].c.length) {
+            all += app.globalData.levelContent[id].c[j].levelnum;
+            j++;
+          }
+          theOne.maxlevel = all;// app.globalData.levelContent[id].levelnum;
+        }
+        app.globalData.baseInfo.Lastplay[levelType] = theOne.id;// app.globalData.baseInfo.biglevel;
+      } else {
+        theOne.curlevel++;
+      }
+      lvs[tmp] = theOne;
+      if (!app.isIllegalGroupId(groupId)) {
+        app.addShareGroup(groupId);
+        app.globalData.sessCheckMax = 0;
+        app.setUserData(app.globalData.openIdKey, consts.TYPE_BASE, JSON.stringify(app.globalData.baseInfo).toString());
+      }
+      var sort = 0;
+      while (lvs[sort].id != theOne.id) {
+        sort++;
+      }
+      if (sort < lvs.length) {
+        sort = sort - 1;
+      } else {
+        sort = theOne.id;
+      }
+      that.setData({
+        allLevels: lvs,
+        recLv: app.globalData.baseInfo.Lastplay[levelType],
+        toView: "bar" + lvs[sort].id,
+      });
+    }
+    else {
+      /* var messageBox = {
+        message: "该群当天分享次数已达上限，换个群试试吧！",
+        sureWord: "继续分享",
+        cancelWord: "不了",
+        dataId: ops.target.dataset.id,
+        openType: "share",
+        sureBind: "clickLevelShare",
+        cancelBind: "onCloseMessageBox"
+      };
+      that.setData({
+        messageBox: messageBox
+      }); */
+      if (compVer(app.globalData.sdkV, '1.9.0') >= 0) {
+        wx.showToast({
+          title: "该群当天分享次数已达上限，换个群试试吧！",
+          icon: 'none',
+          duration: 2000,
+        });
+      } else {
+        wx.showToast({
+          title: "今该群分享上限",
+          image: './../../Resources/common/suo2.png',
+          duration: 2000,
+        });
+      }
+    }
+  },
+
+  onShareAppMessage: function (ops) {
+
+    var shareTp = -1;//右上角分享还是游戏内点击按钮分享
+    var tips = app.globalData.gameConfig.challengeTitle;
+    var random = Math.floor(Math.random() * tips.length);
+    var id = -1;
+    if (!(ops.target == null || ops.target.dataset == null || typeof (ops.target.dataset.id) == 'undefined')) {
+      id = ops.target.dataset.id;//获取关卡的点击分享的id
+      shareTp = 0;
+    }
+    var imgId = (Math.floor(Math.random() * 34) + 1);
+    return {
+      title: tips[random],
+      path: '/pages/loading/loading?openId=' + app.globalData.openId + '&gameId=' + consts.GAMEID + '&imgId=' + imgId,
+      imageUrl: './../../Resources/share/' + imgId+ '.jpg',
+
+      success(res) {
+        utilLog("群分享测试 00000000000", res);
+        // utilLog("转发成功.....");
+        if (id >= 0) {
+          var shareTickets = res.shareTickets;
+          if (!shareTickets || shareTickets.length == 0) {
+            /* var messageBox = {
+              message: "分享到群才能解锁。",
+              sureWord: "继续分享",
+              cancelWord: "不了",
+              dataId: ops.target.dataset.id,
+              openType: "share",
+              sureBind: "clickLevelShare",
+              cancelBind: "onCloseMessageBox"
+            };
+            that.setData({
+              messageBox: messageBox
+            }); */
+              wx.showToast({
+                title: "分享到群才能解锁",
+                image: './../../Resources/common/suo2.png',
+                duration: 2000,
+              });
+            return;
+          }
+          utilLog("群分享测试 0", res);
+
+          //延迟分享时不解锁问题
+          var TimerLoading = setTimeout(function () {
+            wx.showLoading({
+              title: 'loading',
+            })
+          }, 500);
+          var istimeOut = false;
+          var TimerShare = setTimeout(function () {
+            that.shareOverGet("12345", levelType, id);
+            istimeOut = true;
+            clearTimeout(TimerShare);
+            clearTimeout(TimerLoading);
+            wx.hideLoading();
+          }, 2000);
+
+          wx.getShareInfo({
+            shareTicket: shareTickets[0],
+            complete:function(res){
+              utilLog("群分享测试 **************", res);
+            },
+            fail(res) {
+              utilLog("分享到群失败2 ", (res));
+            },
+            success:function(res){
+              clearTimeout(TimerShare);
+              clearTimeout(TimerLoading);
+              wx.hideLoading();
+              if (istimeOut) {
+                return;
+              }
+              //调用群分享解密
+              wx.reportAnalytics('share_group', {
+                state: 1,
+              });
+              utilLog("群分享测试 1", res);
+              wx.request({
+                url: app.getBaseUrl() + 'decrypt',
+                data: {
+                  iv: res.iv,
+                  encryptedData: res.encryptedData,
+                  sessionKey: app.globalData.sessionKey,
+                  gameId: consts.GAMEID,
+                  littleGameId: consts.GAMEID
+                },
+                complete: function (res) {
+                  utilLog("群分享  选关 ********complate", res);
+                },
+                success: function (res) {
+                  utilLog("群分享", res );
+                  var groupId = res.data.openGId;
+                  utilLog("groupId " + groupId);
+                  that.shareOverGet(groupId, levelType, id);                  
+                },
+                fail(res) {
+                  console.log("分享到群失败1 ", (res));
+                  //调用群分享解密
+                  wx.reportAnalytics('share_group', {
+                    state: 0,
+                  });
+                }
+              })
+            }
+          });          
+        }
+      },
+      fail(res) {
+        console.log("分享到群失败3 " , (res));
+      }
+    }
+  },
+
+  
+
+})

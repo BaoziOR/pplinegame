@@ -1,0 +1,94 @@
+.containerbg{
+  width: 100%;
+  height: 100%;
+  background: rgba(1, 1, 1, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  position: fixed;
+  z-index: 100;
+}
+
+.middleSet{
+  width: 560rpx;
+  height: 435rpx;
+  position: relative;
+  margin-top: -400rpx;
+  background-color: #fdfae9;
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+}
+.titleSet{
+  width: 100%;
+  height:90rpx;
+  background-color:#ffe8c7;
+  border-top-left-radius: 20rpx;
+  border-top-right-radius: 20rpx;
+  color: #b17d6d;
+  font-size:  40rpx;
+  font-weight: bolder;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+}
+
+.close{
+  position: absolute;
+  width: 51rpx;
+  height:49rpx;
+  right: 25rpx;
+  border-radius: 10rpx;
+  background-color: #ecc5bb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.close image{
+  width: 34rpx;
+  height:34rpx;
+}
+
+.midSet{
+  width: 480rpx;
+  height: 280rpx;
+  margin-left: 40rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 10rpx;
+  /* background: red; */
+}
+.setBtn{
+ width:161rpx;
+  height:114rpx;
+  /* background-color: #edd49a;
+  border-radius: 15rpx;
+  box-shadow: 0 10rpx #dfb583; */
+  color: #ba8260;
+  font-size: 30rpx;
+  font-weight: bolder;
+}
+.numBtn{
+  width:161rpx;
+  height:114rpx;
+  color: #ba8260;
+  font-size: 30rpx;
+  font-weight: bolder;
+}
+
+.setBtn image{
+  width: 121rpx;
+  height:114rpx;
+}
+.setBtnimage{
+  width: 121rpx;
+  height:114rpx;
+}
+
+.numBtn image{
+  width: 121rpx;
+  height:114rpx;
+}

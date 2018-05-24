@@ -1,0 +1,79 @@
+/**app.wxss**/
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+   padding: 200rpx 0;  
+  box-sizing: border-box;
+  background-color: #fefae8;
+} 
+
+
+page{
+  font-family: "PingFang SC", "PingFang-SC-Light", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei",  "sans-serif";
+  font-size: 28rpx;
+  color: #676767;
+  height: 100%;  
+  width: 100%; 
+  overflow: hidden;
+}
+/*滑动条影藏  */
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+
+.button-click {
+   transform: scale(0.99, 0.99); 
+  animation: click 0.15s linear 1;
+}
+@keyframes click{
+  0%{ transform: scale(0.95,0.95);}
+  70%{transform: scale(1.1,1.1);}
+  100%{transform: scale(1, 1);}
+}
+
+
+@keyframes awardIn {
+  0% {
+    transform: scale(1, 1);
+  }
+  1% {
+    transform: scale(1.5, 1.5);
+  }
+  40% {
+    transform: scale(0.9, 0.9);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+@keyframes getAward {
+  0% {
+    transform: scale(1, 1);
+  }
+  1% {
+    transform: scale(3, 3);
+  }
+  98% {
+    transform: scale(0.95, 0.95);
+  }
+  100% {
+    transform: scale(1.05, 1.05);
+  }
+}
+
+
+.ad{
+  height:215rpx;
+  width:750rpx;
+  position: absolute;
+  left:0;
+  bottom: 0; 
+  align-items: center;
+  z-index: 10;
+}

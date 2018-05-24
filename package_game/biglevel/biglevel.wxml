@@ -1,0 +1,137 @@
+<view class='containers' disable-scroll='true'>
+  <block wx:if="{{isColorfulLevel}}">
+    <view class="colorful-view">
+      <image class="colorful-logo" src="img/duocai.png"></image>
+      <image class="diamondbox" src="../../Resources/common/diamondbox.png"></image>
+      <view class="colorful-progress-view">
+        <view class="colorful-progressbg" />
+        <view class="colorful-progress" style='width:{{colorfulRedWidth}}rpx;' />
+        <text class="colorful-progress-txt">{{colorfulProgress}}</text>
+      </view>
+    </view>
+  </block>
+  <!--难度选择  -->
+  <scroll-view class="{{isColorfulLevel?'difficulty-colorful':'difficulty'}}" scroll-y="true" scroll-into-view="{{toView}}">
+    <block wx:for="{{allLevels}}" wx:for-item="levelitem" wx:key="key">
+      <view id='{{levelitem.barId}}' style='display:flex;flex-direction: column;justify-content: center;'>
+        <view class='difficultBtn' data-id='{{levelitem.id}}' hover-class='button-click' bindtap='clickBigLevel' style='background-color:{{colors[(levelitem.sortId%(colors.length))]}};box-shadow: 0 12rpx {{shadowColors[(levelitem.sortId%(colors.length))]}},0 14rpx 10rpx rgba(0,0,0,0.8);'>
+
+          <!--添加透明遮罩图  -->
+          <block wx:if="{{!levelitem.isopen}}">
+            <block wx:if="{{levelitem.openType == 2}}">
+              <button catchtap='clickLevelShare' data-id='{{levelitem.id}}' class='bigShare' open-type='share'>
+              </button>
+            </block>
+            <block wx:else>
+              <view style='background:rgba(0,0,0,0.6);position:absolute;z-index:12; width: 614rpx;height:215rpx; margin-top:-3rpx; border-radius: 12rpx;'></view>
+            </block>
+            <!--新增关卡的新标签的标志  -->
+            <block wx:if="{{levelitem.isNewAdd}}">
+              <image style='width:90rpx;height:86rpx;position:absolute;margin-left:0;margin-top:-4rpx;z-index:13;' src='./img/xin.png' />
+            </block>
+          </block>
+          <block wx:elif="{{recLv!=-1&&levelitem.id==recLv}}">
+            <image src='./img/zuijinwanguo.png' style='position:absolute;margin-left:450rpx;margin-top:-8rpx; width:150rpx;height:66rpx;'></image>
+          </block>
+
+
+          <view class='difficultyBg'>
+            <block wx:if="{{levelConditions[levelitem.id].levelType == 1}}">
+              <image class='difficultIcon' src='./img/x1.png'>
+              </image>
+              <block wx:if="{{levelitem.isPass}}">
+                <image class='diffAward' style='animation: awardIn 0.7s linear 1;' src='./../../Resources/common/awardN.png'></image>
+              </block>
+              <block wx:elif="{{!levelitem.isopen}}">
+                <image class='diffAward' style='position:absolute;top: 35rpx;z-index:13; margin-left:18rpx;width:55rpx;height:69rpx;' src='./../../Resources/common/suo1.png' />
+              </block>
+            </block>
+            <block wx:elif="{{levelConditions[levelitem.id].levelType == 11}}">
+              <image class='difficultIcon' src='./img/x1_10.png'>
+              </image>
+              <block wx:if="{{levelitem.isPass}}">
+                <image class='diffAward' style='animation: awardIn 0.7s linear 1;' src='./../../Resources/common/zuanshi_big.png'></image>
+              </block>
+              <block wx:elif="{{!levelitem.isopen}}">
+                <image class='diffAward' style='position:absolute;top: 35rpx;z-index:13; margin-left:18rpx;width:55rpx;height:69rpx;' src='./../../Resources/common/suo1.png' />
+              </block>
+            </block>
+            <block wx:else>
+              <image class='difficultIcon' src='./img/x1_1.png' />
+              <block wx:if="{{levelitem.isPass}}">
+                <image class='diffAward' src='./../../Resources/common/awardS.png' />
+              </block>
+              <block wx:elif="{{!levelitem.isopen}}">
+                <image class='diffAward' style='position:absolute;top: 35rpx;z-index:13; margin-left:18rpx;width:55rpx;height:69rpx;' src='./../../Resources/common/suo1.png' />
+              </block>
+            </block>
+          </view>
+
+          <view class='difficultTxt'>
+            <view class='diffTxt'>
+              <text style='position:relative;top:8rpx;'>{{levelitem.title}}</text>
+              <block wx:if="{{levelitem.isopen}}">
+                <text style='font-size:28rpx;position:relative;top:13rpx;'>{{levelitem.curlevel}}/{{levelitem.maxlevel}}</text>
+              </block>
+            </view>
+            <block wx:if='{{levelitem.isopen}}'>
+              <view style='align-self:flex-end;font-size:28rpx;position:relative;bottom:-90rpx;'> </view>
+              <!--好友的头像  -->
+              <view class='friend'>
+                <block wx:for="{{levelFriendIcons[levelitem.id]}}" wx:key="key">
+                  <block wx:if="{{item}}">
+                    <view class='friendbg' style='background-color:{{shadowColors[(levelitem.sortId%(colors.length))]}};'>
+                      <image class='firendIcon' src='{{item}}'></image>
+                    </view>
+                  </block>
+                </block>
+              </view>
+            </block>
+            <block wx:else>
+
+              <block wx:if="{{levelitem.openType == 2}}">
+                <text style='align-self:flex-end;font-size:28rpx;position:relative;bottom:-90rpx;z-index:13;'>分享{{levelitem.curlevel}}/{{levelitem.maxlevel}}次</text>
+                <view class='lockbg'>
+                  <button catchtap='clickLevelShare' data-id='{{levelitem.id}}' class='lockShare' open-type='share'>
+                    <text style='width:134rpx;'>分享</text>
+                  </button>
+                </view>
+              </block>
+              <block wx:elif="{{levelitem.openType == 1}}">
+                <text style='z-index:13;align-self:flex-end;font-size:28rpx;position:relative;bottom:-90rpx;'>{{[levelitem.openStr]}}</text>
+              </block>
+              <block wx:else>
+                <text style='align-self:flex-end;font-size:28rpx;position:relative;bottom:-90rpx;'>' '</text>
+              </block>
+
+              <block wx:if="{{levelConditions[levelitem.id].levelType==2}}">
+                <image style='align-self:flex-end; position:absolute;bottom:-3rpx;right:20rpx;width:114rpx;height:157rpx;' src='./img/gaota.png'></image>
+              </block>
+              <block wx:elif="{{levelConditions[levelitem.id].levelType==3}}">
+                <image style='align-self:flex-end; position:absolute;bottom:-3rpx;right:-35rpx;width:161rpx;height:142rpx;' src='./img/liujiaox.png'></image>
+              </block>
+            </block>
+
+          </view>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+  <view class='ad'>
+    <block wx:if="{{countClick}}">
+      <view bindtap="clickad" id="biglevel">
+        <ad unit-id="adunit-0c69259cae16a415"></ad>
+      </view>
+    </block>
+    <block wx:else>
+      <view bindtap="clickH5" id="biglevel">
+        <image class='ad_img' src='./../../Resources/common/ad1.jpg' />
+      </view>
+    </block>
+  </view>
+</view>
+
+<import src="../messagebox/messagebox.wxml" />
+<view wx:if="{{messageBox}}">
+  <template is="messagebox" data="{{...messageBox}}" />
+</view>

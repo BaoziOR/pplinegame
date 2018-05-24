@@ -1,0 +1,9 @@
+<view class='containerbgs'>
+  <view class='holiday'>
+    <image class='holidayImg' src='./../../Resources/common/mqj.png'></image>
+    <view class='holidayClose' hover-class='button-click' bindtap='closeHoliday'>
+      <image class='holidayCloseImg' src='./../../Resources/common/cha.png'></image>
+    </view>
+    <button class='shareBtn' hover-class='button-click'  data-id='7' open-type='share'>分享给妈妈</button>
+  </view>
+</view>

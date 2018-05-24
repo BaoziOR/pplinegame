@@ -1,0 +1,393 @@
+<view class='gamebg' style='position:fixed;background: rgba(1, 1, 1, 0.7);width:100%; height:100%;' disable-scroll='true'>
+  <block wx:if='{{isLessStep||isNewTypeOpen||isLevelClear}}'>
+    <image class='lightCircle' src='./img/guang.png'></image>
+    <view class='flower1' style='animation: flowermove1 30s linear infinite'> </view>
+    <view class='flower4' style='animation-delay:0.5s;animation: flowermove1 34s linear infinite;'> </view>
+
+    <view class='flower3' style='animation-delay:1s;animation: flowermove3 18s linear infinite;'> </view>
+    <view class='flower5' style='animation-delay:1.5s;animation: flowermove3 15s linear infinite;'> </view>
+
+    <view class='flower6' style='animation-delay:2.5s; animation: flowermove2 25s linear infinite;'> </view>
+    <view class='flower2' style='animation-delay:3s; animation: flowermove2 23s linear infinite;'> </view>
+
+    <view class='flower1' style='animation-delay:4s;animation: flowermove1 20s linear infinite'> </view>
+    <view class='flower4' style='animation-delay:4.5s;animation: flowermove1 24s linear infinite;'> </view>
+
+    <view class='flower3' style='animation-delay:6s;animation: flowermove3 18s linear infinite;'> </view>
+    <view class='flower5' style='animation-delay:6.5s;animation: flowermove3 15s linear infinite;'> </view>
+  </block>
+  <view style=' position:fixed;top:0rpx;width:100%;height:{{screenHeight}}rpx;display: flex; flex-direction: column;justify-content: center;align-content: center;align-items: center; animation: comeOut 0.4s ease-out 1;'>
+    <!--标题  -->
+    <view class='title'>
+      <view class='titlebg' style="background:{{isColorfulLevel?'#46aab9':'#4a328c'}}">
+        <image class='titlebgXL' src="{{isColorfulLevel?'img/x_colorful.png':'img/x.png'}}"></image>
+        <image class='titlebgXR' src="{{isColorfulLevel?'img/x_colorful.png':'img/x.png'}}"></image>
+      </view>
+      <view class='titleTxtbg' style="background:{{isColorfulLevel?'#57b9c8':'#7255c6'}}">
+        <block wx:if="{{isNewTypeOpen}}">
+          <text class='winTitle'>{{dialogTitle}}</text>
+        </block>
+        <block wx:else>
+          <text class='lvName' style="color:{{isColorfulLevel?'#aff4ff':'#bca5ff'}}">{{lvName}}</text>
+          <text class='winTitle'>{{dialogTitle}}</text>
+          <text class='levelTitle' style="color:{{isColorfulLevel?'#aff4ff':'#bca5ff'}}">第{{levelId}}关</text>
+        </block>
+      </view>
+    </view>
+
+
+    <!--中间框体  -->
+    <view style='width:610rpx;height:7rpx;background-color:#eed2bd;'></view>
+    <view class='mid'>
+      <!--星星动画  -->
+      <view class='starsAnim'>
+        <image class='stars1' src='./img/x4.png' style='animation-delay: 1s;position:relative; margin-left:120rpx;margin-bottom:470rpx;'></image>
+        <image class='stars2' src='./img/x4.png' style='animation-delay: 2s;position:relative; margin-left:20rpx;margin-bottom:310rpx;'></image>
+        <image class='stars2' src='./img/x4.png' style='animation-delay: 3s;position:relative; margin-left:250rpx;margin-bottom:500rpx;'></image>
+        <image class='stars1' src='./img/x4.png' style='animation-delay: 4s;position:relative; margin-left:-75rpx;margin-bottom:300rpx;'></image>
+      </view>
+
+      <!--bonus关卡  -->
+      <block wx:if="{{isBonus}}">
+        <view class='bonusViewBg'>
+          <image class='busLight' src='./img/light.png'></image>
+          <image class='busBox' style='opacity:0;' src='./img/box2.png'></image>
+          <image class='busBox1' style='opacity:0;' src='./img/box1.png'></image>
+          <view class='awardView' style='opacity:1;transform: scale(1.5, 1.5);'>
+            <image class='awardViewIcon' src='{{bonusAwardUrl[bonusAward.awardtype[0]-1]}}'></image>
+            X{{bonusAward.awardnum}}
+          </view>
+          <view class='busTxt'>恭喜获得
+            <text class='busTxtBonus'>宝箱</text>
+          </view>
+        </view>
+      </block>
+      <!--多彩关卡  -->
+      <block wx:elif="{{isColorfulLevel && isLevelClear && isFirstPass}}">
+        <template is="colorful-level" data="{{rewardIcon:'./../../Resources/common/zuanshi_big.png',rewardWidth:108,rewardHeight:132,rewardName:'水晶',rewardTitle:'恭喜通关，获得',rewardCount:colorfulRewardCount}}" />
+      </block>
+      <!--多彩关卡攒满进度条 -->
+      <block wx:elif="{{getColorfulPackage}}">
+        <template is="colorful-level" data="{{rewardIcon: './../../Resources/common/diamondbox.png',rewardWidth:153,rewardHeight:141,rewardName:'水晶宝箱',rewardTitle:'您解锁了',rewardCount:colorfulRewardCount}}" />
+      </block>
+      <!-- 碾压当前所有小关卡 -->
+      <block wx:elif="{{isLevelClear}}">
+        <view class='timeTip' style='margin-top:-100rpx; background-color:#f0666a;  border-radius: 10rpx;'>
+          <view class='newRecordTime'>太厉害了!</view>
+        </view>
+        <view class='shareAchieve2'>
+          <image class='img' src='./img/flower.png' />
+          <image class='img4' src='{{specialIcon}}' />
+          <view class='achieveTxt3' style='font-size: 35rpx;'>
+            <text>恭喜通关,获得</text>
+            <text style='color:#f66760;'> {{lvName}}</text>
+            <text>奖章!</text>
+          </view>
+        </view>
+      </block>
+      <!-- 新关卡开启 -->
+      <block wx:elif="{{isNewTypeOpen}}">
+        <view class='timeTip' style='margin-top:-100rpx; background-color:#f4e9ce;'>
+          <view class='openNew'>正在打开</view>
+        </view>
+
+        <view class='shareAchieve'>
+          <image class='img' src='./img/flower.png' />
+          <image class='img3' src='{{specialIcon}}' />
+          <view style='top:570rpx;left:200rpx;position:absolute;font-size:29rpx; font-weight: bolder;width:370rpx;display: flex;align-self: center;align-items: center;justify-content:center;color:#ff692e;'>{{nextLeveltitle}}</view>
+          <view class='achieveTxt' style='font-size:35rpx; '>
+            <block wx:if="{{continueType==3}}">
+              <text>解锁条件 : 分享</text>
+              <text style='color:#f66760;'> {{needShareCnt}}</text>
+              <text>次</text>
+            </block>
+            <block wx:elif="{{continueType== 0}}">
+              <text>已开启</text>
+              <text style='color:#f66760;'>{{newLvName}}</text>
+            </block>
+            <block wx:else>
+              <text>解锁条件 : 打通</text>
+              <text style='color:#f66760;'> {{lvName}}</text>
+            </block>
+          </view>
+        </view>
+      </block>
+      <!--并非最低步数也没有达成 成就  -->
+      <block wx:elif="{{perfectCnt < perfectMax||!isLessStep}}">
+        <!--用时 记录  -->
+        <view class='timeTip'>
+          <block wx:if="{{isLessStep}}">
+            <view class='newRecordTime' style='  border-radius: 10rpx;'>太厉害了!</view>
+          </block>
+          <block wx:else>
+            <view class='useTime'>步数</view>
+          </block>
+        </view>
+        <view class='useCount'>
+          <text class='secondCnt'>{{useTime}}</text>
+          <text class='second'>步</text>
+        </view>
+
+        <!--超赶多少好友  -->
+        <block wx:if="{{overRide>80}}">
+          <view class='outrideBig'>
+            <image class='stars3' src='./img/x5.png'></image>
+            <text>用时</text>
+            <text style='color:#f66760;'>{{useTimeMinute}}</text>
+            <text>秒超过全国</text>
+            <text style='color:#f66760;'>{{overRide}}%</text>
+            <text>的玩家</text>
+            <image class='stars3' src='./img/x5.png'></image>
+          </view>
+        </block>
+        <block wx:else>
+          <view class='outride'>
+            <image class='stars3' src='./img/x5.png'></image>
+            <text>用时</text>
+            <text style='color:#f66760;'>{{useTimeMinute}}</text>
+            <text>秒超过全国</text>
+            <text style='color:#f66760;'>{{overRide}}%</text>
+            <text>的玩家</text>
+            <image class='stars3' src='./img/x5.png'></image>
+          </view>
+        </block>
+
+        <!-- 好友数据 -->
+        <view class='friendbg'>
+          <view wx:for="{{curRankItems}}" wx:for-item="item" wx:for-index="id" wx:key="key">
+            <template is="friendInfo" data="{{name:item.nickname,myRank:myRankId,rank:item.id,url:item.url,minute:item.minute,second:item.step}}" />
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class='timeTip' style='margin-top:-100rpx; background-color:#f0666a;'>
+          <view class='newRecordTime'>太厉害了!</view>
+        </view>
+
+        <view class='shareAchievebg'>
+          <image class='img' src='./img/flower.png' />
+          <image class='img2' src='{{awardPic}}'>
+            <view style='position:relative;margin-bottom:25rpx;margin-left:-311rpx;font-weight:bold;text-align:center; color:{{bestTxtColor[perfectIndex]}};font-size:40rpx;z-index:3;'>{{perfectLevelCnt}}</view>
+          </image>
+          <view class='achieveTxt2'>
+            <text>累计</text>
+            <text style='color:#f66760;font-size:44rpx'> {{perfectLevelCnt}}次</text>
+            <text>最少步数</text>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!--普通进度条（最小步数统计）-->
+    <block wx:if="{{!isBonus && !isColorfulLevel}}">
+      <view class='achieveBar'>
+        <view class='barbar' style='width:506rpx;background-color: #7c736e;box-shadow: 0 4rpx #534d3d;'>
+          <view class='barbar' style='width:{{(perfectCnt/perfectMax)*506}}rpx;background-color: #f8793b;' />
+        </view>
+        <image style='position:absolute;margin-top:-70rpx;width:91rpx;height:85rpx;margin-left:-45rpx;' src='{{awardPic}}'></image>
+        <text style='position:relative; top:-35rpx;margin-left:200rpx;'>{{perfectCnt}}/{{perfectMax}}</text>
+        <block wx:if="{{(perfectCnt>=perfectMax||isLessStep)&&isFirstPass}}">
+          <text class='addBest'>+1</text>
+        </block>
+      </view>
+    </block>
+    <!--每日多彩包进度条-->
+    <block wx:elif="{{isColorfulLevel && isLevelClear}}">
+      <view class='achieveBar'>
+        <view class='barbar' style='width:506rpx;background-color: #7c736e;box-shadow: 0 4rpx #534d3d;'>
+          <view class='barbar' style='width:{{(currentColorfulPackage/totalColorfulPackage)*506}}rpx;background-color: #f8793b;' />
+        </view>
+        <image style='position:absolute;margin-top:-70rpx;width:91rpx;height:84rpx;margin-left:-45rpx;' src='{{awardPic}}'></image>
+        <text style='position:relative; top:-35rpx;margin-left:200rpx;'>{{currentColorfulPackage}}/{{totalColorfulPackage}}</text>
+      </view>
+    </block>
+    <!--bonus关卡  -->
+    <block wx:if="{{isBonus}}">
+      <view class='btnBg'>
+        <block wx:if="{{bonusAward!=null&&bonusAward.awardtype[0]==3}}">
+          <!-- 除了碎片其他都可以分享双倍 -->
+          <button class='btnitem' hover-class='button-click' bindtap='clickAwardNextLevel' style='background-color:#95d130;box-shadow: 0 8rpx #6da313;'>领取</button>
+        </block>
+        <block wx:else>
+          <button class='btnitem' hover-class='button-click' open-type="share" data-id='8' bindtap='clickChangeFriend' style='background-color:#ce5bac;box-shadow: 0 8rpx #a33683;'>分享领取双倍</button>
+          <button class='btnitem' hover-class='button-click' bindtap='clickAwardNextLevel' style='background-color:#95d130;box-shadow: 0 8rpx #6da313;'>领取</button>
+        </block>
+      </view>
+      <view class='ad' style='bottom:-20rpx;'>
+        <block wx:if="{{countClick}}">
+          <view bindtap="clickad" id="bouns">
+            <ad unit-id="adunit-0c69259cae16a415"></ad>
+          </view>
+        </block>
+        <block wx:else>
+          <view bindtap="clickH5" class="" id="bouns" data-bonus="bouns">
+            <image class="ad_img" src="./../../Resources/common/ad1.jpg" />
+          </view>
+        </block>
+      </view>
+    </block>
+    <!--通关时  -->
+    <block wx:elif="{{isLevelClear || getColorfulPackage}}">
+      <!-- <block wx:if="{{isColorfulLevel}}">
+        <template is="share" data="{{shareRegard: shareRegard}}"/>
+      </block>
+      <block wx:else> -->
+      <view class='down' style='display:flex; justify-content:center; align-items:center;'>
+        <view class='shareitem' style='width:312rpx; display:flex; justify-content:center;align-items:center;background-color:#ffc24d;box-shadow: 0 12rpx #e99430; border-radius: 10rpx;' hover-class='button-click' bindtap='clickContinue'>继续</view>
+        <!-- <view bindtap='clickNextLevel' class='next' /> -->
+      </view>
+      <view class='ad' style='bottom:-60rpx;'>
+        <block wx:if="{{countClick}}">
+          <view bindtap="clickad" id="pass">
+            <ad unit-id="adunit-0c69259cae16a415"></ad>
+          </view>
+        </block>
+        <block wx:else>
+          <view bindtap="clickH5" class="" id="pass" data-bonus="pass">
+            <image class="ad_img" src="./../../Resources/common/ad1.jpg" />
+          </view>
+        </block>
+      </view>
+      <!-- </block> -->
+    </block>
+    <!-- 开启新关卡 -->
+    <block wx:elif="{{isNewTypeOpen}}">
+      <view class='btnBg'>
+        <button class='btnitem' hover-class='button-click' bindtap='clickRest' style='background-color:#ffc24d;box-shadow: 0 8rpx #eb8f2c;'>休息一下</button>
+        <block wx:if="{{continueType==3}}">
+          <button class='btnitem' hover-class='button-click' bindtap='clickLockShare' open-type='share' data-id='6' style='background-color:#95d130;box-shadow: 0 8rpx #6da313;'>分享</button>
+        </block>
+        <block wx:else>
+          <button class='btnitem' hover-class='button-click' bindtap='clickGoto' open-type='unshare' style='background-color:#95d130;box-shadow: 0 8rpx #6da313;'>前往</button>
+        </block>
+      </view>
+      <view class='ad'>
+        <block wx:if="{{countClick}}">
+          <view bindtap="clickad" id="newopen">
+            <ad unit-id="adunit-0c69259cae16a415"></ad>
+          </view>
+        </block>
+        <block wx:else>
+          <view bindtap="clickH5" class="" id="newopen" data-bonus="newopen">
+            <image class="ad_img" src="./../../Resources/common/ad1.jpg" />
+          </view>
+        </block>
+      </view>
+    </block>
+    <block wx:elif="{{perfectCnt<perfectMax||!isLessStep}}">
+      <view class='btnBg'>
+        <button class='btnitem' hover-class='button-click' open-type="share" data-id='2' bindtap='clickChangeFriend' style='background-color:#ffc24d;box-shadow: 0 8rpx #eb8f2c;'>挑战好友</button>
+        <button class='btnitem' hover-class='button-click' bindtap='clickNextLevel' style='background-color:#95d130;box-shadow: 0 8rpx #6da313;'>下一关</button>
+      </view>
+      <view class='ad' style='bottom:-20rpx;'>
+        <block wx:if="{{countClick}}">
+          <view bindtap="clickad" id="perfect">
+            <ad unit-id="adunit-0c69259cae16a415"></ad>
+          </view>
+        </block>
+        <block wx:else>
+          <view bindtap="clickH5" class="" id="perfect" data-bonus="perfect">
+            <image class="ad_img" src="./../../Resources/common/ad1.jpg" />
+          </view>
+        </block>
+      </view>
+    </block>
+    <block wx:else>
+      <!--下方按钮  -->
+      <template is="share" data="{{shareRegard: shareRegard,countClick: countClick}}" />
+    </block>
+    <view style=' height:115rpx;' />
+  </view>
+</view>
+
+<!--多彩关卡  -->
+<template name="colorful-level">
+  <view class="colorful-view">
+    <view class='timeTip' style='background-color:#f0666a;  border-radius: 10rpx;'>
+      <view class='newRecordTime'>太厉害了!</view>
+    </view>
+    <view class="colorful-bg-1">
+      <view class="colorful-bg-2">
+        <image class="colorful-reward-icon" src='{{rewardIcon}}' style='width:{{rewardWidth}}rpx;height:{{rewardHeight}}rpx;'></image>
+        <text class="colorful-reward-txt">X{{rewardCount}}</text>
+      </view>
+    </view>
+    <view class="colorful-rewardname-bg">
+      <text style='color:#8a5420;font-weight:bold;font-size:37rpx;'>{{rewardTitle}}</text>
+      <text style='color:#45c9b6;font-weight:bold;font-size:37rpx;'>{{rewardName}}</text>
+    </view>
+  </view>
+</template>
+
+<template name='share'>
+  <view class='down'>
+        <button class='shareitem' open-type="share" data-id='3' hover-class='button-click' bindtap='clickShare'>
+          <text>炫耀成绩</text>
+          <block wx:if="{{shareRegard>0}}">
+            <view class='shareAdd'>
+              <image style='width:37rpx;height:44rpx;' src='./../../Resources/common/jinbi.png' />
+              <text style='font-size:25rpx;position:relative;left:5rpx;top:-10rpx;'>+{{shareRegard}}</text>
+            </view>
+          </block>
+        </button>
+      </view>
+      <text bindtap='clickNextLevel' hover-class='button-click' class='next'>下一关</text>
+  <view class='ad' style='bottom:-60rpx;'>
+    <block wx:if="{{countClick}}">
+      <view bindtap="clickad" id="share">
+        <ad unit-id="adunit-0c69259cae16a415"></ad>
+      </view>
+    </block>
+    <block wx:else>
+      <view bindtap="clickH5" class="" id="share" data-bonus="shareSCore">
+        <image class="ad_img" src="./../../Resources/common/ad1.jpg" />
+      </view>
+    </block>
+  </view>
+  <view style=' height:115rpx;' />
+</template>
+<!--炫耀成绩  -->
+<!-- <template name='share'>
+  <view class='down'>
+    <button class='shareitem' open-type="share" data-id='3' hover-class='button-click' bindtap='clickShare'>
+      <text>炫耀成绩</text>
+      <block wx:if="{{shareRegard>0}}">
+        <view class='shareAdd'>
+          <image style='width:37rpx;height:44rpx;' src='./../../Resources/common/jinbi.png' />
+          <text style='font-size:25rpx;position:relative;left:5rpx;top:-10rpx;'>+{{shareRegard}}</text>
+        </view>
+      </block>
+    </button>
+  </view>
+  <text bindtap='clickNextLevel' hover-class='button-click' class='next'>下一关</text>
+  <view class='ad' style='bottom:-60rpx;'>
+    <block wx:if="{{countClick}}">
+      <ad unit-id="adunit-0c69259cae16a415"></ad>
+    </block>
+    <block wx:else>
+      <view bindtap="clickH5" class="" id="share" data-bonus="shareSCore">
+        <image class="ad_img" src="./../../Resources/common/ad1.jpg" />
+      </view>
+    </block>
+  </view>
+  <view style=' height:115rpx;' />
+  </view>
+</template> -->
+
+<!--好友信息模版  -->
+<template name='friendInfo'>
+  <view class='friendInfo'>
+    <block wx:if="{{rank==myRank}}">
+      <text class='rankSelect'>{{rank}}</text>
+    </block>
+    <block wx:else>
+      <text class='rank'>{{rank}}</text>
+    </block>
+    <image class='friendIcon' src='{{url}}'></image>
+    <text class='friendname'>{{name}}</text>
+    <view class='friendScore'>
+      <text>{{second}}</text>
+      <text class='scoreUnit'>步</text>
+    </view>
+  </view>
+</template>

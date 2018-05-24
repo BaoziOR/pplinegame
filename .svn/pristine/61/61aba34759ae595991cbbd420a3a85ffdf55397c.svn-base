@@ -1,0 +1,5 @@
+const cinsts ='{"showType":0,"icon":"https://littlegame.resource.ac.yxd17.com/ac/wx/common/icon_heji.png","games":[{"gameid":1,"gameName":"连连线","imgUrl":"https://littlegame.resource.ac.yxd17.com/ac/wx/common/banner/1.jpg","iconUrl":"https://littlegame.resource.ac.yxd17.com/ac/wx/common/icon/1.jpg","tabs":["益智","休闲","对战"],"appid":"wx26f87a3ccbcec389","path":"/pages/loading/loading"},{"gameid":2,"gameName":"最强耳朵","imgUrl":"https://littlegame.resource.ac.yxd17.com/ac/wx/common/banner/2.jpg","iconUrl":"https://littlegame.resource.ac.yxd17.com/ac/wx/common/icon/2.jpg","tabs":["歌曲","休闲","对战"],"appid":"wx6c0f91e8e6d46062","path":"/pages/login/login"},{"gameid":5,"gameName":"益智发烧友","imgUrl":"https://littlegame.resource.ac.yxd17.com/ac/wx/common/banner/1.jpg","iconUrl":"https://littlegame.resource.ac.yxd17.com/ac/wx/common/icon/1.jpg","tabs":["益智","休闲","对战"],"appid":"wx9170ca1ff6f31088","path":""}]}';
+
+module.exports= {
+  datatest: cinsts
+}

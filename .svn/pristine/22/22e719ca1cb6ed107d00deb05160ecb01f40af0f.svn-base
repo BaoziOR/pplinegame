@@ -1,0 +1,133 @@
+.containerbgs{
+  width: 100%;
+  height: 100%;
+  background: rgba(1, 1, 1, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  position: fixed;
+  z-index: 100;
+}
+/* .holiday{
+  width:750rpx;
+  height: 982rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: holi 1s linear ;   
+}
+.holidayImg{
+  width:750rpx;
+  height: 982rpx;
+}
+.shareBtn{
+  width: 350rpx;
+  height:98rpx;
+  background-color: #ff6868;
+  box-shadow: 0 8rpx #ca4141;
+  border-radius: 20rpx;
+  margin-top:-280rpx;
+  color: white;
+  font-size: 33rpx;
+  font-weight: bolder;
+}
+
+.holidayClose{
+  position: absolute;
+  width: 51rpx;
+  height:49rpx;
+  margin-top: 20rpx;
+  right: 95rpx;
+  border-radius: 10rpx;
+  background-color: #ecc5bb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.holidayCloseImg{
+  width: 34rpx;
+  height:34rpx;
+}
+
+@keyframes holi{
+  0% {
+    transform: scale(0.1,0.1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2,1.2)  rotate(60deg);
+  }
+  100% {
+    transform:scale(1,1)  rotate(0deg);
+  }
+} */
+.award{
+  width: 610rpx;
+  height: 610rpx;
+  background-color: #fefae8;
+  border-bottom-left-radius: 12rpx;
+  border-bottom-right-radius: 12rpx;
+  box-shadow: -2rpx 10rpx #48453a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.awardTxt{
+  width:560rpx;
+  height:260rpx;
+  border-radius: 10rpx;
+  background-color:#f6edd8;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ab9379;
+  display: flex;
+  flex-direction: column;
+}
+.awardItems{
+  width:560rpx;
+  height:260rpx;
+  margin-top:30rpx;
+  display: flex;
+  flex-direction:column;
+  align-items:center;
+  font-size:31rpx;
+  font-weight:bolder;
+  color:#82562b;
+}
+.awardList{
+  width: 560rpx;
+  height: 210rpx;
+  display: flex;
+  justify-content: space-between;
+}
+.itemABg{
+  width:175rpx;
+  height:175rpx;
+  background-color:#f9f4e1;
+  border-radius: 90rpx;
+  margin-top: 22rpx;
+  display: flex;
+  justify-content: center;
+}
+.itemA{
+  width:160rpx;
+  height:160rpx;
+  background-color:#f2e9d0;
+  border-radius: 80rpx;
+  align-self: center;
+  display: flex;
+  flex-direction:  column;
+  justify-content: center;
+  align-items: center;
+}
+.itemIcon{
+  width: 61rpx;
+  height: 75rpx;
+}
+.awardGet{
+  width:334rpx;
+  height:124rpx;
+  margin-top:-30rpx; margin-bottom:150rpx;display: flex;align-items:center;justify-content:center;color:white;font-size:40rpx;font-weight:bolder; background-color:#a2cf4f;box-shadow:0 10rpx #79a235;border-radius:15rpx;
+}

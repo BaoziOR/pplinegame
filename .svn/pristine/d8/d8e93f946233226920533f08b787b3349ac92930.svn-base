@@ -1,0 +1,22 @@
+<template name="messagebox">
+<view class='message-containerbg' style='  background: rgba(1, 1, 1, {{alpha}});'>
+  <!-- //中间层 -->
+  <view class='message-mid2'>
+    <view class='message-content'>{{message}}</view>
+    <view class='message-btns'>
+      <block wx:if="{{cancelWord}}">
+        <view class='message-no' hover-class='button-click' catchtap='{{cancelBind}}'>{{cancelWord}}</view>
+        <view class='message-yesshadow'>
+          <button class='message-yes' hover-class='button-click' catchtap='{{sureBind}}' data-id='{{dataId}}' open-type='{{openType}}' >
+          {{sureWord}}</button>
+        </view>
+      </block>
+      <block wx:else>
+        <view class='message-yesshadow'>
+          <button class='message-yes' hover-class='button-click' catchtap='{{sureBind}}' open-type='{{openType}}' >{{sureWord}}</button>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>
+</template>

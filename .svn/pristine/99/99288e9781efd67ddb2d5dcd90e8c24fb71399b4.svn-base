@@ -1,0 +1,150 @@
+<view class='gamebg' style='position:fixed;background: rgba(1,1, 1, 1); background-color: #fefae8;width:{{screenWidth}}rpx;height:{{screenHeight}}rpx;' disable-scroll='true'>
+
+  <!--抬头标题 -->
+
+  <view class='titleViewbg'>
+    <view class='titleView'>
+      <text class='lvtxt'>第{{levelId}}关</text>
+      <text style='margin-top:7rpx;color: #b5afa6;font-size: 38rpx;width:76rpx;'>步数</text>
+      <view class='itemview1'>
+        <text style='align-self: center;'>{{costStep}}</text>
+      </view>
+       <!--钻石  -->
+      <view class='itemview'>
+        <image class='propIcon' src="./../../Resources/common/teshuhuobi.png"></image>
+        <text class='proptxt' style='color:#82aacd;width:50rpx;'>{{diams}}</text>
+      </view>
+      <!--金币  -->
+      <view class='itemview' style='width:235rpx;'>
+        <image class='propIcon' src="./../../Resources/common/jinbi.png"></image>
+        <text class='proptxt' style='width:180rpx;'>{{coins}}</text>
+      </view>
+    </view>
+    <text class='tipshow' style='visibility:{{errorTip}};margin-top:{{10}}rpx;'>{{tipStr}}</text>
+  </view>
+
+  <!--底框 -->
+  <!--关卡列表 好友排名  -->
+  <!-- 绘制自己的固定元素 -->
+
+  <block wx:if="{{!isGameOver&&!showDialog}}">
+    <canvas class="canvas" style='z-index:1;height:{{canvasHeight}}rpx;' canvas-id='canvasbg' disable-scroll='true'> </canvas>
+    <canvas class="canvas" style='z-index:2;height:{{canvasHeight}}rpx;' canvas-id='canvas' disable-scroll='true' bindtouchstart='touchStart' bindtouchend='touchEnd' bindtouchmove='touchMove'>
+    </canvas>
+    <canvas class="canvas" style='z-index:2;height:{{canvasHeight}}rpx;' canvas-id='canvascircle' disable-scroll='true' bindtouchstart='touchStart' bindtouchend='touchEnd' bindtouchmove='touchMove'>
+    </canvas>
+
+    <block wx:if= "{{isBonus}}"> 
+      <cover-view class='bonusbg'>
+        <cover-view class='bonusview' />
+        <cover-image class='boxImg' src='./img/box2.png'> </cover-image>
+        <cover-view class='bonusTxt'>奖励关卡</cover-view>
+        <cover-image class='boxstar' style='transform: scale(0.65,0.65);margin-left:-200rpx;margin-top:160rpx;' src='./img/star.png'> </cover-image>
+        <cover-image class='boxstar' style='transform: scale(0.8,0.8);margin-left:5rpx;margin-top:100rpx;' src='./img/star.png'> </cover-image>
+      </cover-view>
+    </block>
+
+    <view style='position:absolute;top:{{canvasHeight+133}}rpx; width:100%;height:500rpx;' bindtap='clickBgs' bindtouchmove='clickBgs'>
+      <view class='list' style='margin-top:10rpx;background-color: #fefae8;'>
+        <image hover-class='button-click' bindtap='clickToMenu' style='visibility:{{showReset}};width:86rpx;height:86rpx;margin-left:46rpx;' src='./../../Resources/common/icon_chonglai.png'></image>
+        <view style='width:511rpx; display:flex;margin-left:80rpx;'>
+          <view class='musicIcon' hover-class='button-click' bindtap='clickMusic'>
+              <image class='musicIcon' src='./../../Resources/common/mute_{{isMusicOn}}.png'></image>
+          </view>
+          <template is='newbtn' data="{{id: 1,title:'分享/提示',leftpos:72,title1:'',btnshare:'share',tips:false,img:'./img/icon_help.png',tip:true,overyou:1,color:'#78bff6',colorShadow:'#54a1dc'}}" />
+          <template is='newbtn' data="{{id:2,title:'提示',leftpos:66,title1:tipCost,btnshare:'no',tips:true,tipCost:tipCost,img:'./img/icon_tishi.png' ,color:'#f6a044',colorShadow:'#d57b1a'}}" />
+        </view>
+      </view>
+    </view>
+    <block wx:if="{{screenHeight-canvasHeight-444<0}}">
+      <view class='ad' style='top:{{canvasHeight+229}}rpx;'>
+          <block wx:if="{{countClick}}">
+          <ad unit-id="adunit-0c69259cae16a415"></ad>
+        </block>
+        <block wx:else>
+          <view bindtap="clickH5" class="" id="ppline1" data-bonus="ppline1">
+            <image class="ad_img" src="./../../Resources/common/ad1.jpg" />
+          </view>
+        </block>
+      </view>
+    </block>
+    <block wx:else>
+      <view class='ad'>
+        <block wx:if="{{countClick}}">
+          <ad unit-id="adunit-0c69259cae16a415"></ad>
+        </block>
+        <block wx:else>
+          <view bindtap="clickH5" class="" id="ppline2" data-bonus="ppline2">
+            <image class="ad_img" src="./../../Resources/common/ad1.jpg" />
+          </view>
+        </block>
+      </view>
+    </block>
+  </block>
+</view>
+
+<!--底部列表模块  -->
+<template name='newbtn'>
+  <button hover-class='button-click' style='height:80rpx;width:197rpx;margin-right:16rpx; border:none;padding: 0rpx;color:white;font-size:24rpx;' data-id='{{id}}' plain='true' open-type="{{btnshare}}" bindtap='clickBtn'>
+    <image style='height:80rpx;width:197rpx;' src='{{img}}'></image>
+    <text style='position:absolute;left:{{leftpos}}rpx;top:1rpx;letter-spacing:2rpx'>{{title}}{{title1}}</text>
+  </button>
+</template>
+
+<template name='btnItem'>
+  <button class='btnview' data-id='{{id}}' open-type="{{btnshare}}" hover-class='button-click' bindtap='clickBtn'>
+    <view class='btnlist' style='background-color:{{color}};box-shadow: 0 7rpx {{colorShadow}};'>
+      <image class='btnicon' src='{{img}}'></image>
+      <text>{{title}}</text>
+      <block wx:if="{{tips}}">
+        <text class='costTxt'> {{tipCost}}</text>
+        <block wx:if="{{tips}}">
+          <image class='costicon' src='./../../Resources/common/jinbi.png'></image>
+        </block>
+        <block wx:else>
+          <image class='costicon' src='./../../Resources/common/jinbi.png'></image>
+        </block>
+      </block>
+    </view>
+  </button>
+</template>
+
+<!--将线走满空格的提示框(注：coverview的flex布局在低版本下失灵，尽量用绝对位置布局)-->
+<block wx:if="{{showErrorBox}}">
+  <cover-view class="errorbox-container">
+    <cover-view class="errorbox-view">
+      <cover-view class="errorbox-bg">
+        <cover-view class="errorbox-title"></cover-view>
+        <cover-view class="errorbox-title-txt">小提示</cover-view>
+        <cover-view class="errorbox-img-container">
+          <cover-image class="errorbox-img errorbox-img-left" src="./img/cuo_1.png"></cover-image>
+          <cover-image class="errorbox-img errorbox-img-right" src="./img/dui_1.png"></cover-image>
+        </cover-view>
+        <cover-view class="errorbox-tips-container">
+          <cover-view style="font-size:32rpx;font-weight:bold;color:#8a5420;">●用线</cover-view>
+          <cover-view style="font-size:36rpx;font-weight:bold;color:#f67269;position:relative;bottom:5rpx;">走满空格</cover-view>
+          <cover-view style="font-size:32rpx;font-weight:bold;color:#8a5420;">才能过关</cover-view>
+        </cover-view>
+      </cover-view>
+      <cover-view class="errorbox-confirm" hover-class='button-click' bindtap='closeErrorBox'>
+        <cover-view class="errorbox-confirm-txt">确定</cover-view>
+      </cover-view>
+      <!-- <cover-view class="errorbox-nomore" hover-class='button-click' bindtap='noMoreErrorBox'>不再提示</cover-view> -->
+    </cover-view>
+  </cover-view>
+</block>
+
+<!--结束的弹出框  -->
+<block wx:if="{{isGameOver}}">
+  <include src='./../gameover/gameover.wxml' />
+</block>
+
+<!--弹出的体力不足或者金币不足时的提示框  -->
+<block wx:if="{{showDialog}}">
+  <include src='./../dialog/dialog.wxml' />
+</block>
+
+<import src="../messagebox/messagebox.wxml" />
+<view wx:if="{{messageBox}}">
+  <template is="messagebox" data="{{...messageBox}}" />
+</view>

@@ -1,0 +1,25 @@
+{
+  "pages":[
+	  "pages/loading/loading"
+  ],
+  "subPackages": [
+    {
+      "root": "package_game",
+      "pages": [
+        "index/index",
+        "biglevel/biglevel",
+        "moregame/moregame",
+        "ppline/ppline",
+        "rank/rank",
+        "messagebox/messagebox",
+        "notice/notice"
+      ]
+    }
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fefae8",
+    "navigationBarTitleText": "连连线",
+    "navigationBarTextStyle":"black"
+  }
+}
